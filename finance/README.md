@@ -8,6 +8,7 @@
 |------|------|----------|----------|
 | [stock-turnover-screener](./stock-turnover-screener/) | 筛选今日换手率翻倍个股，按板块分类并结合新闻给出推荐 | 3–5日均量 | 简体中文 |
 | [earnings-call-analyzer](./earnings-call-analyzer/) | 输入 ticker，自动获取最新财报电话会并输出七章节深度分析报告 | — | 繁体中文 |
+| [us-momentum-screener](./us-momentum-screener/) | 实时筛选美股强势股（涨幅≥4%、换手率≥4%、市值≥$1B），按涨幅排序并附新闻催化剂分析 | 当日实时 | 简体中文 |
 
 ---
 
@@ -28,6 +29,7 @@
 |------|----------|
 | stock-turnover-screener | [stock-turnover-screener.skill](./stock-turnover-screener/stock-turnover-screener.skill) |
 | earnings-call-analyzer | [earnings-call-analyzer.skill](./earnings-call-analyzer/earnings-call-analyzer.skill) |
+| us-momentum-screener | [us-momentum-screener.skill](./us-momentum-screener/us-momentum-screener.skill) |
 
 ---
 
