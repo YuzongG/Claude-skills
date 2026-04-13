@@ -29,13 +29,14 @@ Ticker symbols, company names, and numeric values stay in their original form (e
 ## What This Skill Does
 
 Given a market (default: US equities), this skill:
-1. Identifies stocks where today's **turnover rate has doubled** (≥2×) vs. their 20-day average
+1. Identifies stocks where today's **turnover rate has doubled** (≥2×) vs. their 3–5 day average
 2. Groups them by **GICS sector**
 3. Fetches **current news** to explain each surge
 4. **Ranks and recommends** each stock (Strong Watch / Watch / Neutral / Avoid)
 
 **Turnover Rate** = Today's Volume ÷ Shares Outstanding (or Float)  
-**Surge Threshold** = Today's Turnover Rate ÷ 20-day Avg Turnover Rate ≥ 2.0×
+**Surge Threshold** = Today's Turnover Rate ÷ 3–5 day Avg Turnover Rate ≥ 2.0×  
+**均值基准**：优先使用5日均量；若数据源仅提供3日均量，则以3日为准，并在报告中注明。
 
 ---
 
@@ -83,7 +84,7 @@ If the user uploads a CSV or pastes a table of stocks with volume data, use that
 | Company Name | screener |
 | Sector | screener or lookup |
 | Today's Volume | screener |
-| Avg Volume (20d) | screener |
+| Avg Volume (3–5d) | screener or compute |
 | Relative Volume (ratio) | screener or compute |
 | Price, % Change | screener |
 | Market Cap | screener |
@@ -94,8 +95,10 @@ If the user uploads a CSV or pastes a table of stocks with volume data, use that
 
 For each stock in results:
 ```
-turnover_surge_ratio = today_volume / avg_20d_volume
+turnover_surge_ratio = today_volume / avg_3_to_5d_volume
 ```
+优先使用5日均量（`avg_5d_volume`）；若数据源不提供，改用3日均量（`avg_3d_volume`）并标注。
+
 Filter to: `turnover_surge_ratio >= 2.0`
 
 Sort by `turnover_surge_ratio` descending. Take top N (default 20).
@@ -173,7 +176,7 @@ Present results as a structured report **entirely in Simplified Chinese**:
 
 ```
 # 📊 换手率异动报告 — [日期]
-本次筛选：共 [N] 只个股今日换手率较20日均值翻倍（≥2×）
+本次筛选：共 [N] 只个股今日换手率较3–5日均值翻倍（≥2×）
 
 ---
 ## 🏆 各板块精选个股
