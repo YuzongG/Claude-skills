@@ -1,0 +1,20 @@
+# Personal API keys — never commit the real .mcp.json
+.mcp.json
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Claude Code local state
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+dist/
+*.egg-info/
+
+# uv
+# uv.lock is intentionally committed for reproducibility

@@ -63,8 +63,21 @@ earnings-call-analyzer/
 
 ---
 
+## 数据来源
+
+| 功能 | 数据源 |
+|------|--------|
+| EPS 实际值 vs 预期值 | **[Finnhub API](https://finnhub.io)** `/stock/earnings`（推荐，需免费 Key）|
+| 关键财务指标 | Finnhub `/stock/metric`（毛利率、营业利润率、P/E 等） |
+| 财报相关新闻 | Finnhub `/company-news` |
+| 公司基本资料 | Finnhub `/stock/profile2` |
+| 逐字稿/管理层叙述 | 网络搜索（SeekingAlpha、Motley Fool 等） |
+
+> 无 Finnhub API Key 时全程使用网络搜索替代，EPS surprise 数据需手动查找。
+
 ## 注意事项
 
+- 建议配置 Finnhub API Key（免费），可自动获取 EPS 超预期幅度、历史财季对比等结构化数据
 - 财报逐字稿通常在电话会结束后 24-48 小时内公开
 - 若逐字稿尚未公开，将以新闻稿 + 媒体报导替代，并注明
 - 用户也可直接上传逐字稿文件，Claude 会以上传内容为主

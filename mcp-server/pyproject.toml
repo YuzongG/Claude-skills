@@ -1,0 +1,13 @@
+[project]
+name = "finnhub-mcp"
+version = "0.1.0"
+description = "Finnhub MCP server for stock screening skills"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]>=1.2.0",
+    "httpx>=0.27.0",
+    "yfinance>=0.2.50",
+]
+
+[tool.uv]
+package = false

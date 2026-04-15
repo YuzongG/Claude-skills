@@ -17,6 +17,19 @@ description: >
 
 ---
 
+## 数据来源说明
+
+| 数据 | 来源 | 说明 |
+|------|------|------|
+| 候选股票列表、今日成交量 | Finviz（WebFetch） | Finnhub 无筛选器端点，需从 Finviz 获取初始列表 |
+| 实时价格、涨跌幅 | `mcp__finnhub__get_batch_quotes` | Finnhub /quote 端点（注意：不含成交量字段） |
+| 流通股数、市值、行业 | `mcp__finnhub__get_profile` | Finnhub /stock/profile2 端点 |
+| 公司新闻 | `mcp__finnhub__get_news` | Finnhub /company-news 端点 |
+
+> ⚠️ **重要**：Finnhub `/quote` 端点**不返回成交量字段 `v`**，今日成交量必须从 Finviz 页面获取。
+
+---
+
 ## 功能说明
 
 根据以下条件实时筛选美股，按涨幅从高到低排序，并对每只股票搜索最新新闻，给出催化剂分析：
@@ -45,77 +58,78 @@ description: >
 
 ---
 
-### Step 2 — 获取筛选数据
+### Step 2 — 获取候选股票列表（Finviz）
 
-**Claude 无法直接调用实时行情 API，使用以下免费数据源：**
+**Finviz 是初始候选列表和今日成交量的唯一来源，此步骤不可跳过。**
 
 #### 方案 A — Finviz 筛选器（首选）
 
-直接抓取以下 URL（包含所有筛选条件）：
-
 ```
-https://finviz.com/screener.ashx?v=111&f=cap_smallover,ta_change_u4,ta_changeopen_u4&o=-change&r=1
+web_fetch: https://finviz.com/screener.ashx?v=111&f=cap_smallover,ta_change_u4,ta_changeopen_u4&o=-change&r=1
 ```
 
 参数说明：
 - `cap_smallover` → 市值 > $300M（后续手动过滤 ≥ $1B）
 - `ta_change_u4` → 今日涨幅 > 4%
-- `ta_changeopen_u4` → 盘中较开盘涨幅 > 4%（确认盘中强势）
+- `ta_changeopen_u4` → 盘中较开盘涨幅 > 4%
 - `o=-change` → 按涨幅降序
 
-也可尝试：
+从表格提取每只股票的：**Ticker、公司名、当前价格、涨跌幅%、今日成交量（Volume）、市值**。
+
+也可尝试更严格的市值筛选：
 ```
-https://finviz.com/screener.ashx?v=111&f=cap_midover,ta_change_u4&o=-change
-```
-（`cap_midover` → 市值 > $2B，更严格的市值筛选）
-
-用 `web_fetch` 抓取页面，解析表格中的以下字段：
-
-| 字段 | 说明 |
-|------|------|
-| Ticker | 股票代码 |
-| Company | 公司名 |
-| Sector | 行业板块 |
-| Market Cap | 市值 |
-| Price | 当前价格 |
-| Change | 今日涨跌幅 |
-| Volume | 今日成交量 |
-| Avg Volume | 平均成交量 |
-| Rel Volume | 相对成交量倍数 |
-| Float | 流通股数（用于计算换手率） |
-
-#### 方案 B — 网络搜索补充
-
-若 Finviz 抓取失败，使用搜索：
-```
-web_search: "US stocks up 4% today momentum screener finviz"
-web_search: "美股今日涨幅超4% 强势股"
-web_search: site:stockanalysis.com "stocks up today"
+web_fetch: https://finviz.com/screener.ashx?v=111&f=cap_midover,ta_change_u4&o=-change
 ```
 
-#### 方案 C — Yahoo Finance
+#### 方案 B — 网络搜索补充（Finviz 不可用时）
 
 ```
+web_search: "US stocks up 4% today momentum screener"
 web_fetch: https://finance.yahoo.com/screener/predefined/day_gainers
 ```
 
 ---
 
-### Step 3 — 计算换手率并过滤
+### Step 3 — MCP 精确数据 enrichment
 
-对 Finviz 返回的每只股票：
+获得 Ticker 列表后，用 MCP 工具获取精确数据。
+
+#### 3.1 批量获取实时行情
 
 ```
-换手率(%) = 今日成交量 / 流通股数(Float) × 100
+mcp__finnhub__get_batch_quotes(symbols=["NVDA", "AAPL", "TSLA", ...])
 ```
 
-过滤条件：`换手率 ≥ 4%`
+返回每只股票的 `c`（现价）、`dp`（涨跌幅%）、`h`、`l`、`o`、`pc`。
 
-若 Finviz 未提供 Float，可用以下替代判断：
-- `Rel Volume ≥ 2×` 作为高换手的近似代理
-- 或搜索：`web_search: "[TICKER] float shares outstanding"`
+> ⚠️ `/quote` 不含成交量，今日成交量使用 Step 2 从 Finviz 获取的 Volume 字段。
 
-市值过滤：从结果中剔除市值 < $1B 的股票。
+#### 3.2 获取公司资料（流通股数 + 市值）
+
+对候选列表中的每只股票调用：
+
+```
+mcp__finnhub__get_profile(symbol="NVDA")
+```
+
+若需批量，逐一调用（MCP server 内置限速，无需手动控制）。
+
+返回字段：
+- `shareOutstanding` → 流通股数（单位：百万股）
+- `marketCapitalization` → 市值（单位：百万美元）
+- `finnhubIndustry` → 行业分类
+
+#### 3.3 计算换手率与过滤
+
+```
+换手率(%) = Finviz今日成交量 / (shareOutstanding × 1,000,000) × 100
+市值($B) = marketCapitalization / 1,000
+```
+
+**过滤：**
+- `换手率 ≥ 4%`
+- `市值 ≥ $1B（即 marketCapitalization ≥ 1,000`）
+- `涨幅 dp ≥ 4%`
 
 按**今日涨幅**从高到低排序，取 Top 20。
 
@@ -123,11 +137,18 @@ web_fetch: https://finance.yahoo.com/screener/predefined/day_gainers
 
 ### Step 4 — 新闻与催化剂搜索
 
-对排名靠前的 **Top 10–15 只股票**，逐一搜索：
+对排名靠前的 **Top 10–15 只股票**，调用 MCP 新闻工具：
+
+```
+mcp__finnhub__get_news(symbol="NVDA", days_back=7)
+```
+
+返回最多 5 条最新新闻（含 `headline`、`summary`、`source`），取前 2–3 条提炼催化剂。
+
+若 Finnhub 新闻不足，补充网络搜索：
 
 ```
 web_search: "[TICKER] [公司名] news today"
-web_search: "[TICKER] stock surge reason [本月]"
 web_search: "[TICKER] catalyst earnings announcement"
 ```
 
@@ -175,15 +196,16 @@ web_search: "[TICKER] catalyst earnings announcement"
 ```
 # 📊 美股强势股报告 — [日期] [时间 ET]
 筛选条件：市值≥$1B｜涨幅+4%~+50%｜换手率≥4%
+数据来源：Finviz（成交量）× Finnhub MCP（行情/资料/新闻）
 本次共筛出 [N] 只强势股，按涨幅排序如下：
 
 ---
 
 ## 🏆 强势股排行
 
-| 排名 | 代码 | 公司 | 当前价 | 涨幅 | 换手率 | 成交量/均量 | 催化剂 | 建议 |
-|------|------|------|--------|------|--------|-------------|--------|------|
-| 1 | NVDA | NVIDIA | $892 | +12.4% | 8.3% | 3.2× | 📢 财报超预期 | 🟢 重点关注 |
+| 排名 | 代码 | 公司 | 当前价 | 涨幅 | 换手率 | 市值 | 催化剂 | 建议 |
+|------|------|------|--------|------|--------|------|--------|------|
+| 1 | NVDA | NVIDIA | $892 | +12.4% | 8.3% | $2.2T | 📢 财报超预期 | 🟢 重点关注 |
 | 2 | ... | | | | | | | |
 
 ---
@@ -219,11 +241,11 @@ web_search: "[TICKER] catalyst earnings announcement"
 ## 特殊情况处理
 
 - **盘前/盘后时段**：注明数据为盘前/盘后，涨幅可能剧烈波动，建议开盘后再确认。
-- **Finviz 无法访问**：切换方案 B 或 C，并在报告中注明数据来源。
-- **换手率数据缺失**：用相对成交量（Rel Volume ≥ 2×）替代，标注 "估算"。
+- **Finviz 无法访问**：切换方案 B，并在报告中注明数据来源。
+- **MCP 工具返回 error**：跳过该股票的 enrichment，直接使用 Finviz 原始数据，标注「数据部分缺失」。
 - **ETF / SPAC**：默认排除，除非用户明确要求纳入。
 - **微盘股（市值 < $1B）**：标注 ⚠️ 提醒用户注意流动性风险。
-- **未找到催化剂**：标注 ❓ 不明，并在分析中注明「未找到明确消息驱动，注意是否为技术性突破或市场情绪联动」。
+- **未找到催化剂**：标注 ❓ 不明，并注明「未找到明确消息驱动，注意是否为技术性突破或市场情绪联动」。
 - **涨幅超 30%**：额外提示可能存在轧空（Short Squeeze）或消息面重大事件。
 
 ---

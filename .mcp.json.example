@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "finnhub": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/path/to/this/repo/mcp-server",
+        "run",
+        "server.py"
+      ],
+      "env": {
+        "FINNHUB_API_KEY": "YOUR_FINNHUB_API_KEY_HERE"
+      }
+    }
+  }
+}

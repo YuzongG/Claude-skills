@@ -17,6 +17,34 @@ description: >
 
 ---
 
+## Finnhub API 配置
+
+本 Skill 使用 **Finnhub API** 获取结构化财务数据，包括 EPS 实际值 vs 预期值、关键财务指标与公司基本资料。
+
+### 获取 API Key
+
+1. 前往 [https://finnhub.io/register](https://finnhub.io/register) 免费注册
+2. 复制 Dashboard 页面上的 API Key
+3. 免费方案限制：**60 次请求/分钟**
+
+### API Key 读取顺序
+
+1. 优先检查环境变量 `FINNHUB_API_KEY`
+2. 若未检测到，询问用户：「请提供 Finnhub API Key 以获取精确财务数据（可在 finnhub.io 免费注册）：」
+3. 若用户无法提供，全程使用 web_search / web_fetch 替代
+
+### 核心 API 端点（Base URL: `https://finnhub.io/api/v1`）
+
+| 用途 | 端点 | 关键字段 |
+|------|------|---------|
+| 公司基本资料 | `GET /stock/profile2?symbol={symbol}&token={key}` | `name`、`exchange`、`finnhubIndustry`、`marketCapitalization`、`shareOutstanding` |
+| EPS 历史与预期 | `GET /stock/earnings?symbol={symbol}&limit=8&token={key}` | `actual`（实际 EPS）、`estimate`（预期 EPS）、`surprise`（超预期幅度）、`surprisePercent`、`period`（财季） |
+| 基本财务指标 | `GET /stock/metric?symbol={symbol}&metric=all&token={key}` | `revenueGrowthTTMYoy`、`grossMarginTTM`、`operatingMarginTTM`、`peBasicExclExtraTTM`、`52WeekHigh`、`52WeekLow` |
+| 最新公司新闻 | `GET /company-news?symbol={symbol}&from={YYYY-MM-DD}&to={YYYY-MM-DD}&token={key}` | `headline`、`summary`、`source`（财报相关新闻） |
+| 实时行情 | `GET /quote?symbol={symbol}&token={key}` | `c`（现价）、`dp`（今日涨跌幅%）、`pc`（昨收） |
+
+---
+
 ## 工作流程
 
 ### Step 1 — 确认输入
@@ -29,7 +57,41 @@ description: >
 
 ### Step 2 — 获取财报资料
 
-依序尝试以下来源，直到取得足够内容：
+**同步执行两条线，合并后进行分析：**
+
+#### 线路 A — Finnhub API（结构化数据，优先执行）
+
+若有 `FINNHUB_API_KEY`，依序调用：
+
+**1. 公司基本资料：**
+```
+web_fetch: https://finnhub.io/api/v1/stock/profile2?symbol={TICKER}&token={FINNHUB_API_KEY}
+```
+
+**2. EPS 历史（最近 8 季）：**
+```
+web_fetch: https://finnhub.io/api/v1/stock/earnings?symbol={TICKER}&limit=8&token={FINNHUB_API_KEY}
+```
+返回每季 `actual`、`estimate`、`surprise`、`surprisePercent`，直接用于第三章财务数据表格。
+
+**3. 关键财务指标：**
+```
+web_fetch: https://finnhub.io/api/v1/stock/metric?symbol={symbol}&metric=all&token={FINNHUB_API_KEY}
+```
+从 `metric` 对象中提取：`revenueGrowthTTMYoy`（营收 YoY%）、`grossMarginTTM`（毛利率）、`operatingMarginTTM`（营业利润率）、`currentRatioAnnual`（流动比率）、`52WeekHigh` / `52WeekLow`。
+
+**4. 财报相关新闻（财报日前后各 7 天）：**
+```
+web_fetch: https://finnhub.io/api/v1/company-news?symbol={TICKER}&from={财报日-7天}&to={财报日+7天}&token={FINNHUB_API_KEY}
+```
+筛选含 "earnings"、"results"、"revenue"、"EPS" 关键字的新闻，取前 5 条。
+
+**5. 实时股价（了解财报后市场反应）：**
+```
+web_fetch: https://finnhub.io/api/v1/quote?symbol={TICKER}&token={FINNHUB_API_KEY}
+```
+
+#### 线路 B — 逐字稿与管理层叙述（必须执行）
 
 **优先：逐字稿（Transcript）**
 ```
@@ -42,19 +104,17 @@ web_search: "[TICKER] investor relations earnings transcript [最新季度]"
 ```
 web_search: "[TICKER] earnings results Q[N] [YEAR] revenue EPS guidance"
 web_search: "[TICKER] Q[N] [YEAR] earnings call highlights analyst questions"
-web_fetch: 公司 IR 页面（investor relations）
+web_fetch: https://stockanalysis.com/stocks/{ticker}/financials/
 ```
 
 **补充数据来源：**
-- `https://stockanalysis.com/stocks/[ticker]/financials/`
-- `https://finance.yahoo.com/quote/[TICKER]/`
+- `https://finance.yahoo.com/quote/{TICKER}/`
 - SeekingAlpha、Motley Fool、Benzinga 的财报摘要
 
-**最低资料门槛：**
-必须取得以下至少一项才能输出完整报告：
-- 逐字稿（完整或摘要）
-- 官方新闻稿（Press Release）+ 分析师摘要
-- 至少 3 篇独立财报报导
+#### 资料门槛：
+
+- **Finnhub API 可用**：EPS、财务指标、新闻已从 API 取得，逐字稿/新闻稿至少 1 项即可输出完整报告
+- **无 API Key**：须取得逐字稿或官方新闻稿 + 至少 3 篇独立财报报导
 
 若资料不足，告知用户并说明缺失部分，其余已有资料照常分析。
 
@@ -106,16 +166,29 @@ web_fetch: 公司 IR 页面（investor relations）
 
 ### 三、关键财务数据
 
+> 📡 **数据来源标注：** 标注 `[API]` 表示来自 Finnhub 实时数据，标注 `[稿]` 表示来自逐字稿/新闻稿。
+
 **本季实际数据：**
 
-| 指标 | 数值 | YoY | 是否超预期 |
-|------|------|-----|-----------|
-| 营收 | | | |
-| 毛利率 | | | |
-| 营业利润率 | | | |
-| 净利润 | | | |
-| EPS | | | |
-| 自由现金流 | | | |
+| 指标 | 数值 | YoY | 是否超预期 | 来源 |
+|------|------|-----|-----------|------|
+| 营收 | | | | |
+| 毛利率 | `metric.grossMarginTTM` | | | [API] |
+| 营业利润率 | `metric.operatingMarginTTM` | | | [API] |
+| 净利润 | | | | |
+| EPS | `earnings[0].actual` vs `earnings[0].estimate` | | `surprisePercent`% | [API] |
+| 自由现金流 | | | | |
+
+> EPS 超预期幅度直接来自 Finnhub `/stock/earnings` 的 `surprise` 字段；若 API 无法取得，从逐字稿中手动填入。
+
+**最近 4 季 EPS 表现（来自 Finnhub）：**
+
+| 财季 | 实际 EPS | 预期 EPS | 超预期幅度 |
+|------|---------|---------|-----------|
+| （最新） `earnings[0].period` | `actual` | `estimate` | `surprisePercent`% |
+| `earnings[1].period` | | | |
+| `earnings[2].period` | | | |
+| `earnings[3].period` | | | |
 
 **业务线拆分**（若有）：
 
@@ -123,7 +196,8 @@ web_fetch: 公司 IR 页面（investor relations）
 |--------|------|-----|
 | | | |
 
-**其他关键指标**（若有提及）：用户数、客户数、CapEx、库存天数、递延营收等。
+**其他关键指标**（若有提及）：用户数、客户数、CapEx、库存天数、递延营收等。  
+参考 Finnhub `metric` 中的：`currentRatioAnnual`（流动比率）、`inventoryTurnoverAnnual`（库存周转率）。
 
 **未来指引（Guidance）：**
 - 下季营收区间：
