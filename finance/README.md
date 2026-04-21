@@ -9,6 +9,7 @@
 | [stock-turnover-screener](./stock-turnover-screener/) | 筛选今日换手率较5日均值翻倍（≥2×）的个股，按板块分类并结合新闻给出推荐 | 简体中文 |
 | [us-momentum-screener](./us-momentum-screener/) | 实时筛选美股强势股（涨幅≥4%、换手率≥4%、市值≥$1B），按涨幅排序并附新闻催化剂分析 | 简体中文 |
 | [earnings-call-analyzer](./earnings-call-analyzer/) | 输入 ticker，自动获取最新财报电话会并输出七章节深度分析报告 | 繁体中文 |
+| [dcf-valuation](./dcf-valuation/) | 输入 ticker，自动获取财务数据，用 DCF 方法输出乐观/中性/悲观三情景内在价值与安全边际 | 简体中文 |
 
 ---
 
@@ -43,6 +44,7 @@ Finnhub MCP Server（精确计算）
 | stock-turnover-screener | [stock-turnover-screener.skill](./stock-turnover-screener/stock-turnover-screener.skill) |
 | us-momentum-screener | [us-momentum-screener.skill](./us-momentum-screener/us-momentum-screener.skill) |
 | earnings-call-analyzer | [earnings-call-analyzer.skill](./earnings-call-analyzer/earnings-call-analyzer.skill) |
+| dcf-valuation | [dcf-valuation.skill](./dcf-valuation/dcf-valuation.skill) |
 
 ### Claude Code（MCP 服务器，精确数据）
 
