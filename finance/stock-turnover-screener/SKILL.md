@@ -77,12 +77,13 @@ Finviz 是唯一能同时提供「筛选」+「今日成交量」的免费数据
 **Step 2.1：抓取第一页**
 
 ```
-web_fetch: https://finviz.com/screener.ashx?v=111&f=sh_avgvol_o200,sh_relvol_o2&o=-relativevolume
+web_fetch: https://finviz.com/screener.ashx?v=111&f=sh_avgvol_o200,sh_relvol_o2,cap_smallover&o=-relativevolume
 ```
 
 参数说明：
 - `sh_relvol_o2` → 相对成交量 > 2×（初步筛选放量股）
 - `sh_avgvol_o200` → 日均成交量 > 200K（排除流动性极差的仙股）
+- `cap_smallover` → 市值 > $3亿（预筛，排除绝大多数微盘股，后续再精确过滤至 $10亿）
 - `o=-relativevolume` → 按相对成交量倒序
 
 从页面表格提取：**Ticker、公司名、当前价格、涨跌幅%、今日成交量（Volume）**。
@@ -90,15 +91,16 @@ web_fetch: https://finviz.com/screener.ashx?v=111&f=sh_avgvol_o200,sh_relvol_o2&
 **Step 2.2：按需抓取更多页**（可选，获取 40–60 只候选）
 
 ```
-web_fetch: https://finviz.com/screener.ashx?v=111&f=sh_avgvol_o200,sh_relvol_o2&o=-relativevolume&r=21
-web_fetch: https://finviz.com/screener.ashx?v=111&f=sh_avgvol_o200,sh_relvol_o2&o=-relativevolume&r=41
+web_fetch: https://finviz.com/screener.ashx?v=111&f=sh_avgvol_o200,sh_relvol_o2,cap_smallover&o=-relativevolume&r=21
+web_fetch: https://finviz.com/screener.ashx?v=111&f=sh_avgvol_o200,sh_relvol_o2,cap_smallover&o=-relativevolume&r=41
 ```
 
-**Step 2.3：过滤 ETF 和极低价股**
+**Step 2.3：过滤 ETF、低价股和小市值股**
 
 从候选列表中剔除：
 - ETF（名称含 ETF / Fund / Trust 且无实际业务）
-- 股价 < $1 的仙股（换手率异动往往是操控迹象）
+- 股价 < $1 的仙股
+- **估算市值 < $10亿美元**（硬过滤）：用页面中的价格 × 已知流通股数（或 Finviz 显示的 Market Cap 列）快速估算；若无法确认则保留，留到 Step 3 精确过滤
 
 ---
 
@@ -131,7 +133,9 @@ mcp__finnhub__get_batch_turnover(
 }
 ```
 
-**过滤条件：** `surge_ratio >= 2.0`
+**过滤条件（同时满足）：**
+1. `surge_ratio >= 2.0`
+2. `market_cap >= 1000M`（市值 ≥ $10亿）：用 `float_shares × 当前价格` 计算；若返回的 float_shares 是流通股而非总股本，需结合 profile 的 `marketCapitalization` 字段做最终确认
 
 **排序：** 按 `surge_ratio` 倒序，取 Top N（默认 20）。
 
@@ -267,7 +271,7 @@ Present results as a structured report **entirely in Simplified Chinese**:
 
 ## 特殊情况处理
 
-- **仙股／微盘股**：标注提示。小盘股高换手往往是操纵迹象，市值低于5000万美元自动扣2分。
+- **市值 < $10亿美元**：**直接从结果列表中剔除**，不参与评分和展示。若因数据延迟未能在 Step 2/3 过滤，在最终输出前检查一遍 `marketCapitalization` 字段，不符合则移除。
 - **ETF**：默认排除，除非用户明确要求纳入。
 - **盘前／盘后数据**：注明数据为盘前/盘后，换手率倍数可能偏高，需谨慎参考。
 - **停牌股票**：标注 ⛔ 并从推荐列表中剔除。
