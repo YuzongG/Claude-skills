@@ -17,38 +17,32 @@ header {
   padding: 26px 52px 14px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
-header h1 {
-  font-size: 21px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: #f8fafc;
-}
-header p {
-  font-size: 12px;
-  color: #475569;
-  margin-top: 5px;
-  letter-spacing: 0.01em;
-}
+header h1 { font-size: 21px; font-weight: 700; letter-spacing: -0.03em; color: #f8fafc; }
+header p  { font-size: 12px; color: #475569; margin-top: 5px; }
 
 .top-bar {
-  display: flex;
-  align-items: center;
-  padding: 10px 52px;
-  gap: 20px;
+  display: flex; align-items: center;
+  padding: 10px 52px; gap: 20px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
-  flex-wrap: wrap;
   background: rgba(255,255,255,0.015);
+  flex-wrap: wrap;
 }
-.lpill {
-  display: flex; align-items: center; gap: 7px;
-  font-size: 11px; color: #94a3b8; white-space: nowrap;
-}
+.lpill { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #94a3b8; white-space: nowrap; }
 .lpill-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .badges { margin-left: auto; display: flex; gap: 14px; align-items: center; font-size: 11px; color: #64748b; }
 .badge { display: flex; align-items: center; gap: 5px; }
 .b-sq { width: 22px; height: 13px; border-radius: 3px; }
 .b-user { border: 2px solid rgba(255,255,255,0.55); background: rgba(255,255,255,0.04); }
 .b-add  { border: 1px dashed rgba(255,255,255,0.28); }
+
+.score-hint {
+  padding: 9px 52px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 11px; color: #475569;
+  display: flex; align-items: center; gap: 18px;
+}
+.score-bar { display: flex; align-items: center; gap: 6px; }
+.score-swatch { width: 28px; height: 7px; border-radius: 4px; }
 
 #wrap { padding: 24px 52px 40px; overflow-x: auto; }
 #diagram { position: relative; width: 1140px; }
@@ -58,40 +52,31 @@ header p {
   border-radius: 14px; pointer-events: none;
 }
 
+/* Cards */
 .card {
   position: absolute; width: 160px;
   border-radius: 11px; padding: 11px 13px 13px;
   cursor: default;
-  transition: transform 0.16s ease, box-shadow 0.16s ease;
+  transition: opacity 0.18s ease, transform 0.16s ease, box-shadow 0.16s ease;
 }
-.card:hover {
-  transform: translateY(-4px) scale(1.025);
-  box-shadow: 0 14px 44px rgba(0,0,0,0.55);
-  z-index: 999;
-}
-.card.user { border-style: solid; border-width: 2px; }
+.card.user { border-style: solid;  border-width: 2px; }
 .card.add  { border-style: dashed; border-width: 1px; }
 
 .card.l0.user  { border-color: #8b5cf6; background: rgba(139,92,246,0.11); }
 .card.l0.add   { border-color: rgba(139,92,246,0.38); background: rgba(139,92,246,0.05); }
 .card.l0 .tic  { color: #a78bfa; }
-
 .card.l1.user  { border-color: #3b82f6; background: rgba(59,130,246,0.11); }
 .card.l1.add   { border-color: rgba(59,130,246,0.38); background: rgba(59,130,246,0.05); }
 .card.l1 .tic  { color: #60a5fa; }
-
 .card.l2.user  { border-color: #06b6d4; background: rgba(6,182,212,0.11); }
 .card.l2.add   { border-color: rgba(6,182,212,0.38); background: rgba(6,182,212,0.05); }
 .card.l2 .tic  { color: #22d3ee; }
-
 .card.l3.user  { border-color: #10b981; background: rgba(16,185,129,0.11); }
 .card.l3.add   { border-color: rgba(16,185,129,0.38); background: rgba(16,185,129,0.05); }
 .card.l3 .tic  { color: #34d399; }
-
 .card.l4.user  { border-color: #f59e0b; background: rgba(245,158,11,0.11); }
 .card.l4.add   { border-color: rgba(245,158,11,0.38); background: rgba(245,158,11,0.05); }
 .card.l4 .tic  { color: #fbbf24; }
-
 .card.l5.user  { border-color: #ef4444; background: rgba(239,68,68,0.11); }
 .card.l5.add   { border-color: rgba(239,68,68,0.38); background: rgba(239,68,68,0.05); }
 .card.l5 .tic  { color: #f87171; }
@@ -100,20 +85,40 @@ header p {
 .co   { font-size: 9px; color: #64748b; margin-top: 3px; line-height: 1.3; }
 .desc { font-size: 9.5px; color: #cbd5e1; margin-top: 7px; line-height: 1.5; }
 
+/* Score badge (shown on hover) */
+.score-badge {
+  position: absolute;
+  top: -12px; right: -8px;
+  font-size: 10px; font-weight: 800;
+  padding: 2px 8px; border-radius: 20px;
+  z-index: 1000; white-space: nowrap;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.55);
+  letter-spacing: 0.02em;
+  color: #000;
+  animation: popIn 0.12s ease;
+}
+.score-badge .dir-arrow {
+  font-size: 8px;
+  opacity: 0.7;
+  margin-right: 2px;
+}
+@keyframes popIn {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* Glow on hovered card */
+.card.hovered {
+  transform: translateY(-5px) scale(1.04) !important;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.18), 0 16px 48px rgba(0,0,0,0.6) !important;
+  z-index: 998;
+}
+.card.dimmed { opacity: 0.08 !important; }
+.card.lit    { opacity: 1   !important; }
+
 #arrows {
   position: absolute; top: 0; left: 0;
   width: 100%; overflow: visible; pointer-events: none;
-}
-
-.note-box {
-  margin: 12px 52px 0;
-  padding: 10px 16px;
-  border-radius: 8px;
-  background: rgba(245,158,11,0.08);
-  border: 1px solid rgba(245,158,11,0.25);
-  font-size: 11.5px;
-  color: #fbbf24;
-  line-height: 1.6;
 }
 </style>
 </head>
@@ -121,7 +126,7 @@ header p {
 
 <header>
   <h1>AI Layer 1 — Compute Infrastructure Supply Chain</h1>
-  <p>Most upstream (top) → AI cloud compute consumers (bottom) &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; Hover over any card for details</p>
+  <p>Most upstream (top) → AI cloud compute consumers (bottom) &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; <strong>Hover</strong> any card to see relationships &amp; scores</p>
 </header>
 
 <div class="top-bar">
@@ -137,8 +142,13 @@ header p {
   </div>
 </div>
 
-<div class="note-box">
-  ⚠️ <strong>Everpure</strong> — 未能识别此 ticker 对应的上市公司（AI产业链范畴内）。如果是水冷/散热相关公司，可能是 Pentair 旗下品牌，并非独立上市。请告知实际公司名或完整 ticker，将补充进图中。
+<div class="score-hint">
+  <span>关联度评分（0–10）：</span>
+  <span class="score-bar"><span class="score-swatch" style="background:#22c55e"></span>8–10 核心依赖</span>
+  <span class="score-bar"><span class="score-swatch" style="background:#eab308"></span>6–7 重要关联</span>
+  <span class="score-bar"><span class="score-swatch" style="background:#f97316"></span>4–5 一般关联</span>
+  <span class="score-bar"><span class="score-swatch" style="background:#ef4444"></span>0–3 弱/间接</span>
+  <span style="margin-left:auto">↑ 供应方 &nbsp; ↓ 采购方</span>
 </div>
 
 <div id="wrap">
@@ -149,97 +159,119 @@ header p {
 
 <script>
 const CW = 160, CH = 92;
-
-// Layer Y positions
 const LY = [30, 200, 378, 566, 740, 870];
 const LCOLORS = ['#8b5cf6','#3b82f6','#06b6d4','#10b981','#f59e0b','#ef4444'];
 
 const nodes = [
-  // ── Layer 0: Equipment ───────────────────────────────────────────────────
-  {id:'KLAC', co:'KLA Corporation',          desc:'Wafer inspection &\nmetrology tools\n→ finds defects during fab',                              l:0, x:10,  u:true },
-  {id:'ONTO', co:'Onto Innovation',           desc:'Optical metrology &\nprocess control systems\n→ measures film thickness',                     l:0, x:200, u:true },
-  {id:'AMAT', co:'Applied Materials',         desc:'CVD/PVD deposition +\netch + ion implant tools\n→ largest equipment co.',                     l:0, x:390, u:false},
-  {id:'LRCX', co:'Lam Research',              desc:'Etch & deposition\nprocess equipment\n→ critical for 3nm/2nm',                               l:0, x:580, u:false},
-  {id:'ASML', co:'ASML',                      desc:'EUV lithography machines\n→ only supplier globally\n→ biggest supply chokepoint',             l:0, x:770, u:false},
+  // ── Layer 0: Equipment
+  {id:'KLAC', co:'KLA Corporation',           desc:'Wafer inspection &\nmetrology tools\n→ finds defects during fab',                           l:0, x:10,  u:true },
+  {id:'ONTO', co:'Onto Innovation',            desc:'Optical metrology &\nprocess control systems\n→ measures film thickness',                   l:0, x:200, u:true },
+  {id:'AMAT', co:'Applied Materials',          desc:'CVD/PVD deposition +\netch + ion implant tools\n→ largest equipment co.',                  l:0, x:390, u:false},
+  {id:'LRCX', co:'Lam Research',               desc:'Etch & deposition\nprocess equipment\n→ critical for 3nm/2nm',                            l:0, x:580, u:false},
+  {id:'ASML', co:'ASML',                       desc:'EUV lithography machines\n→ only supplier globally\n→ biggest supply chokepoint',          l:0, x:770, u:false},
 
-  // ── Layer 1: EDA / IP / Foundry ──────────────────────────────────────────
-  {id:'CDNS', co:'Cadence Design Systems',    desc:'EDA software & silicon IP\n→ every chip is designed\n   using Cadence tools',                 l:1, x:10,  u:false},
-  {id:'SNPS', co:'Synopsys',                  desc:'EDA + verification tools\n& security IP\n→ design/synthesis SW',                             l:1, x:210, u:false},
-  {id:'RMBS', co:'Rambus',                    desc:'HBM memory interface\nIP licensing\n→ royalties from NVDA/AMD',                              l:1, x:470, u:true },
-  {id:'INTC', co:'Intel',                     desc:'x86 CPU + Gaudi 3 AI GPU\n+ Intel Foundry (IFS)\n→ IDM: designs & fabs',                     l:1, x:730, u:true },
+  // ── Layer 1: EDA / IP / Foundry
+  {id:'CDNS', co:'Cadence Design Systems',     desc:'EDA software & silicon IP\n→ every chip is designed\n   using Cadence tools',              l:1, x:10,  u:false},
+  {id:'SNPS', co:'Synopsys',                   desc:'EDA + verification tools\n& security IP\n→ design/synthesis SW',                          l:1, x:210, u:false},
+  {id:'RMBS', co:'Rambus',                     desc:'HBM memory interface\nIP licensing\n→ royalties from NVDA/AMD',                           l:1, x:470, u:true },
+  {id:'INTC', co:'Intel',                      desc:'x86 CPU + Gaudi 3 AI GPU\n+ Intel Foundry (IFS)\n→ IDM: designs & fabs',                  l:1, x:730, u:true },
 
-  // ── Layer 2: Core Compute & Memory ───────────────────────────────────────
-  {id:'NVDA', co:'NVIDIA',                    desc:'GPU H100 / B200 / GB200\nCUDA ecosystem\n+ InfiniBand networking',                           l:2, x:10,  u:true },
-  {id:'AVGO', co:'Broadcom',                  desc:'Switch ASICs (Tomahawk)\nCustom AI XPUs for\nGoogle, Meta, Apple',                           l:2, x:200, u:true },
-  {id:'MCHP', co:'Microchip Technology',      desc:'MCU + FPGA + timing ICs\nfor DC power management\n& PCIe control',                           l:2, x:390, u:true },
-  {id:'QUIK', co:'QuickLogic',                desc:'eFPGA + sensor hub IP\nEdge AI / IoT processing\n→ small-cap niche play',                    l:2, x:570, u:true },
-  {id:'SIMO', co:'Silicon Motion Technology', desc:'NAND flash controllers\n& SSD firmware IP\n→ enterprise/DC storage',                         l:2, x:750, u:true },
-  {id:'MU',   co:'Micron Technology',         desc:'HBM3E memory chips\nDRAM + NAND flash\n→ inside every NVDA GPU',                            l:2, x:950, u:false},
+  // ── Layer 2: Core Compute & Memory
+  {id:'NVDA', co:'NVIDIA',                     desc:'GPU H100 / B200 / GB200\nCUDA ecosystem\n+ InfiniBand networking',                        l:2, x:10,  u:true },
+  {id:'AVGO', co:'Broadcom',                   desc:'Switch ASICs (Tomahawk)\nCustom AI XPUs for\nGoogle, Meta, Apple',                        l:2, x:200, u:true },
+  {id:'MCHP', co:'Microchip Technology',       desc:'MCU + FPGA + timing ICs\nfor DC power management\n& PCIe control',                        l:2, x:390, u:true },
+  {id:'QUIK', co:'QuickLogic',                 desc:'eFPGA + sensor hub IP\nEdge AI / IoT processing\n→ small-cap niche play',                 l:2, x:570, u:true },
+  {id:'SIMO', co:'Silicon Motion Technology',  desc:'NAND flash controllers\n& SSD firmware IP\n→ enterprise/DC storage',                      l:2, x:750, u:true },
+  {id:'MU',   co:'Micron Technology',          desc:'HBM3E memory chips\nDRAM + NAND flash\n→ inside every NVDA GPU',                         l:2, x:950, u:false},
 
-  // ── Layer 3: Networking & Optical ────────────────────────────────────────
-  {id:'AAOI', co:'Applied Optoelectronics',   desc:'Optical transceivers\n& laser diode modules\n→ 100G/400G for DCs',                          l:3, x:10,  u:true },
-  {id:'NOK',  co:'Nokia',                     desc:'IP routing & optical\ntransport networking\n→ DC interconnect infra',                        l:3, x:210, u:true },
-  {id:'COHR', co:'Coherent Corp',             desc:'800G optical modules\n& transceiver chips\n→ direct AAOI competitor',                        l:3, x:420, u:false},
-  {id:'MRVL', co:'Marvell Technology',        desc:'Custom cloud ASICs\n+ optical DSP chips\n→ AMZN/MSFT custom chips',                         l:3, x:640, u:false},
-  {id:'ANET', co:'Arista Networks',           desc:'Ethernet switches for\nAI/ML cluster fabric\n→ hyperscaler preferred',                       l:3, x:870, u:false},
+  // ── Layer 3: Networking & Optical
+  {id:'AAOI', co:'Applied Optoelectronics',    desc:'Optical transceivers\n& laser diode modules\n→ 100G/400G for DCs',                        l:3, x:10,  u:true },
+  {id:'NOK',  co:'Nokia',                      desc:'IP routing & optical\ntransport networking\n→ DC interconnect infra',                     l:3, x:210, u:true },
+  {id:'COHR', co:'Coherent Corp',              desc:'800G optical modules\n& transceiver chips\n→ direct AAOI competitor',                     l:3, x:420, u:false},
+  {id:'MRVL', co:'Marvell Technology',         desc:'Custom cloud ASICs\n+ optical DSP chips\n→ AMZN/MSFT custom chips',                      l:3, x:640, u:false},
+  {id:'ANET', co:'Arista Networks',            desc:'Ethernet switches for\nAI/ML cluster fabric\n→ hyperscaler preferred',                    l:3, x:870, u:false},
 
-  // ── Layer 4: Server Infrastructure ───────────────────────────────────────
-  {id:'SMCI', co:'Super Micro Computer',      desc:'GPU-optimized server\nsystems & liquid-cooled\nrack solutions',                              l:4, x:10,  u:false},
-  {id:'P',    co:'Everpure (fmr. Pure Storage)',desc:'All-flash storage for\nAI training pipelines\nFlashBlade//EXA + STaaS',                    l:4, x:220, u:true },
-  {id:'VRT',  co:'Vertiv Holdings',           desc:'Power distribution &\nliquid cooling systems\n→ every AI data center',                       l:4, x:430, u:false},
+  // ── Layer 4: Server Infrastructure
+  {id:'SMCI', co:'Super Micro Computer',       desc:'GPU-optimized server\nsystems & liquid-cooled\nrack solutions',                           l:4, x:10,  u:false},
+  {id:'P',    co:'Everpure (fmr. Pure Storage)',desc:'All-flash storage for\nAI training pipelines\nFlashBlade//EXA + STaaS',                  l:4, x:220, u:true },
+  {id:'VRT',  co:'Vertiv Holdings',            desc:'Power distribution &\nliquid cooling systems\n→ every AI data center',                    l:4, x:430, u:false},
 
-  // ── Layer 5: AI Cloud Providers ──────────────────────────────────────────
-  {id:'AMZN', co:'Amazon / AWS',              desc:'AWS cloud + Trainium2\n& Inferentia2 custom ASICs\n→ largest cloud',                         l:5, x:10,  u:true },
-  {id:'NBIS', co:'Nebius Group',              desc:'AI-native GPU cloud\nbuilt for ML workloads\n→ ex-Yandex, fast growth',                      l:5, x:230, u:true },
-  {id:'HUT',  co:'Hut 8',                     desc:'GPU cloud + HPC infra\n& Bitcoin mining\n→ compute infrastructure',                          l:5, x:450, u:true },
-  {id:'IREN', co:'Iris Energy',               desc:'AI cloud GPU clusters\n+ green-energy HPC\n→ renewable-powered DC',                          l:5, x:655, u:true },
-  {id:'MSFT', co:'Microsoft Azure',           desc:'Azure AI + OpenAI\nMaia 2 custom ASIC\n→ #2 cloud, Copilot suite',                          l:5, x:870, u:false},
+  // ── Layer 5: AI Cloud Providers
+  {id:'AMZN', co:'Amazon / AWS',               desc:'AWS cloud + Trainium2\n& Inferentia2 custom ASICs\n→ largest cloud',                      l:5, x:10,  u:true },
+  {id:'NBIS', co:'Nebius Group',               desc:'AI-native GPU cloud\nbuilt for ML workloads\n→ ex-Yandex, fast growth',                   l:5, x:230, u:true },
+  {id:'HUT',  co:'Hut 8',                      desc:'GPU cloud + HPC infra\n& Bitcoin mining\n→ compute infrastructure',                       l:5, x:450, u:true },
+  {id:'IREN', co:'Iris Energy',                desc:'AI cloud GPU clusters\n+ green-energy HPC\n→ renewable-powered DC',                       l:5, x:655, u:true },
+  {id:'MSFT', co:'Microsoft Azure',            desc:'Azure AI + OpenAI\nMaia 2 custom ASIC\n→ #2 cloud, Copilot suite',                       l:5, x:870, u:false},
 ];
 
-// Edges: supply relationships (upstream → downstream)
+// score: 关联度 0–10
 const edges = [
-  // Equipment tools enable INTC foundry (and TSMC, Samsung — but they're not US listed)
-  {f:'KLAC', t:'INTC'}, {f:'ONTO', t:'INTC'}, {f:'AMAT', t:'INTC'},
-  {f:'LRCX', t:'INTC'}, {f:'ASML', t:'INTC'},
-  // EDA design tools feed all fabless chip designers
-  {f:'CDNS', t:'NVDA'}, {f:'SNPS', t:'NVDA'},
-  {f:'CDNS', t:'AVGO'}, {f:'SNPS', t:'AVGO'},
-  // Rambus licenses HBM interface IP to GPU makers
-  {f:'RMBS', t:'NVDA'}, {f:'RMBS', t:'AVGO'},
-  // Micron HBM is stacked directly into NVIDIA GPUs
-  {f:'MU',   t:'NVDA'},
-  // INTC CPU goes into every server
-  {f:'INTC', t:'SMCI'},
-  // NVIDIA GPU → all major cloud customers
-  {f:'NVDA', t:'AMZN'}, {f:'NVDA', t:'NBIS'}, {f:'NVDA', t:'HUT'},
-  {f:'NVDA', t:'IREN'}, {f:'NVDA', t:'MSFT'},
-  // Broadcom switch ASICs + custom XPUs → hyperscalers
-  {f:'AVGO', t:'AMZN'}, {f:'AVGO', t:'MSFT'},
-  // MCU timing ICs + NAND controllers go into server boards
-  {f:'MCHP', t:'SMCI'}, {f:'SIMO', t:'SMCI'},
-  // Optical transceivers feed into network switches
-  {f:'AAOI', t:'NOK'},  {f:'AAOI', t:'ANET'},
-  {f:'COHR', t:'NOK'},  {f:'COHR', t:'ANET'},
-  // Marvell custom ASICs for cloud (Trainium-level engagements)
-  {f:'MRVL', t:'AMZN'}, {f:'MRVL', t:'MSFT'},
-  // Network switches connect DCs
-  {f:'ANET', t:'AMZN'}, {f:'ANET', t:'NBIS'}, {f:'ANET', t:'MSFT'},
-  {f:'NOK',  t:'AMZN'},
-  // GPU servers shipped to cloud builders
-  {f:'SMCI', t:'NBIS'}, {f:'SMCI', t:'HUT'}, {f:'SMCI', t:'IREN'},
-  // Everpure all-flash storage → AI cloud (training pipeline storage, FlashBlade//EXA)
-  {f:'P',    t:'AMZN'}, {f:'P',   t:'NBIS'}, {f:'P',   t:'HUT'}, {f:'P',   t:'IREN'},
-  // Power & cooling infrastructure
-  {f:'VRT',  t:'AMZN'}, {f:'VRT', t:'NBIS'}, {f:'VRT', t:'HUT'}, {f:'VRT', t:'IREN'},
+  // Equipment → INTC foundry
+  {f:'KLAC', t:'INTC', s:7},
+  {f:'ONTO', t:'INTC', s:5},
+  {f:'AMAT', t:'INTC', s:8},
+  {f:'LRCX', t:'INTC', s:7},
+  {f:'ASML', t:'INTC', s:9},
+  // EDA design tools
+  {f:'CDNS', t:'NVDA', s:8},
+  {f:'SNPS', t:'NVDA', s:8},
+  {f:'CDNS', t:'AVGO', s:8},
+  {f:'SNPS', t:'AVGO', s:7},
+  // IP licensing
+  {f:'RMBS', t:'NVDA', s:6},
+  {f:'RMBS', t:'AVGO', s:5},
+  // Micron HBM stacked into GPU
+  {f:'MU',   t:'NVDA', s:9},
+  // INTC CPU → servers
+  {f:'INTC', t:'SMCI', s:7},
+  // NVDA GPU → cloud
+  {f:'NVDA', t:'AMZN', s:9},
+  {f:'NVDA', t:'NBIS', s:10},
+  {f:'NVDA', t:'HUT',  s:9},
+  {f:'NVDA', t:'IREN', s:9},
+  {f:'NVDA', t:'MSFT', s:9},
+  // Broadcom switch ASICs + custom XPU
+  {f:'AVGO', t:'AMZN', s:8},
+  {f:'AVGO', t:'MSFT', s:7},
+  // MCU + NAND → servers
+  {f:'MCHP', t:'SMCI', s:6},
+  {f:'SIMO', t:'SMCI', s:7},
+  // Optical → switches
+  {f:'AAOI', t:'NOK',  s:6},
+  {f:'AAOI', t:'ANET', s:7},
+  {f:'COHR', t:'NOK',  s:7},
+  {f:'COHR', t:'ANET', s:8},
+  // Marvell custom ASIC
+  {f:'MRVL', t:'AMZN', s:9},
+  {f:'MRVL', t:'MSFT', s:7},
+  // Network switches → cloud DCs
+  {f:'ANET', t:'AMZN', s:9},
+  {f:'ANET', t:'NBIS', s:8},
+  {f:'ANET', t:'MSFT', s:9},
+  {f:'NOK',  t:'AMZN', s:6},
+  // GPU servers → cloud
+  {f:'SMCI', t:'NBIS', s:9},
+  {f:'SMCI', t:'HUT',  s:8},
+  {f:'SMCI', t:'IREN', s:8},
+  // Everpure all-flash storage → AI cloud
+  {f:'P',    t:'AMZN', s:7},
+  {f:'P',    t:'NBIS', s:8},
+  {f:'P',    t:'HUT',  s:6},
+  {f:'P',    t:'IREN', s:6},
+  // Power & cooling
+  {f:'VRT',  t:'AMZN', s:8},
+  {f:'VRT',  t:'NBIS', s:7},
+  {f:'VRT',  t:'HUT',  s:8},
+  {f:'VRT',  t:'IREN', s:8},
 ];
 
-// ── Render ──────────────────────────────────────────────────────────────────
+// ── Render ────────────────────────────────────────────────────────────────
 
 const diagram = document.getElementById('diagram');
 const totalH = LY[5] + CH + 30;
 diagram.style.height = totalH + 'px';
 
-// Background bands
+// Bands
 LY.forEach((y, i) => {
   const b = document.createElement('div');
   b.className = 'band';
@@ -247,52 +279,134 @@ LY.forEach((y, i) => {
   diagram.appendChild(b);
 });
 
-// Node map for arrow coord lookup
+// Node map
 const nm = {};
 
-// Render cards
 nodes.forEach(n => {
   const card = document.createElement('div');
   card.className = `card l${n.l} ${n.u ? 'user' : 'add'}`;
   card.style.left = n.x + 'px';
   card.style.top  = LY[n.l] + 'px';
-  const lines = n.desc.split('\n');
   card.innerHTML =
     `<div class="tic">${n.id}</div>` +
     `<div class="co">${n.co}</div>` +
-    `<div class="desc">${lines.join('<br>')}</div>`;
+    `<div class="desc">${n.desc.split('\n').join('<br>')}</div>`;
   diagram.appendChild(card);
-  nm[n.id] = { x: n.x, y: LY[n.l] };
+  nm[n.id] = { x: n.x, y: LY[n.l], el: card };
 });
 
-// Draw arrows
+// SVG arrows
 const svg = document.getElementById('arrows');
 svg.setAttribute('width', '1140');
 svg.setAttribute('height', String(totalH));
 
-const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-defs.innerHTML = `
-  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5"
-          markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse">
-    <path d="M0,0 L10,5 L0,10 z" fill="rgba(100,116,139,0.55)"/>
+function makeMarker(id, color) {
+  return `<marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5"
+    markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="${color}"/>
   </marker>`;
+}
+const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+defs.innerHTML =
+  makeMarker('ah-default', 'rgba(100,116,139,0.55)') +
+  makeMarker('ah-green',  '#22c55e') +
+  makeMarker('ah-yellow', '#eab308') +
+  makeMarker('ah-orange', '#f97316') +
+  makeMarker('ah-red',    '#ef4444');
 svg.appendChild(defs);
 
-edges.forEach(e => {
+const svgPaths = [];
+edges.forEach((e, i) => {
   const s = nm[e.f], t = nm[e.t];
-  if (!s || !t) return;
-  const x1 = s.x + CW / 2;
-  const y1 = s.y + CH;
-  const x2 = t.x + CW / 2;
-  const y2 = t.y - 1;
+  if (!s || !t) { svgPaths.push(null); return; }
+  const x1 = s.x + CW / 2, y1 = s.y + CH;
+  const x2 = t.x + CW / 2, y2 = t.y - 1;
   const mid = (y1 + y2) / 2;
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   path.setAttribute('d', `M${x1},${y1} C${x1},${mid} ${x2},${mid} ${x2},${y2}`);
   path.setAttribute('stroke', 'rgba(100,116,139,0.20)');
   path.setAttribute('stroke-width', '1.5');
   path.setAttribute('fill', 'none');
-  path.setAttribute('marker-end', 'url(#ah)');
+  path.setAttribute('marker-end', 'url(#ah-default)');
+  path.style.transition = 'opacity 0.15s ease';
   svg.appendChild(path);
+  svgPaths.push(path);
+});
+
+// Adjacency list
+const adj = {};
+nodes.forEach(n => adj[n.id] = []);
+edges.forEach((e, i) => {
+  if (adj[e.f]) adj[e.f].push({ id: e.t, s: e.s, dir: 'out', i });
+  if (adj[e.t]) adj[e.t].push({ id: e.f, s: e.s, dir: 'in',  i });
+});
+
+function scoreStyle(s) {
+  if (s >= 8) return { color: '#22c55e', marker: 'ah-green'  };
+  if (s >= 6) return { color: '#eab308', marker: 'ah-yellow' };
+  if (s >= 4) return { color: '#f97316', marker: 'ah-orange' };
+  return             { color: '#ef4444', marker: 'ah-red'    };
+}
+
+function resetAll() {
+  nodes.forEach(n => {
+    const el = nm[n.id].el;
+    el.classList.remove('hovered', 'dimmed', 'lit');
+    el.style.boxShadow = '';
+    el.querySelectorAll('.score-badge').forEach(b => b.remove());
+  });
+  svgPaths.forEach(p => {
+    if (!p) return;
+    p.setAttribute('stroke', 'rgba(100,116,139,0.20)');
+    p.setAttribute('stroke-width', '1.5');
+    p.setAttribute('marker-end', 'url(#ah-default)');
+    p.style.opacity = '1';
+  });
+}
+
+nodes.forEach(n => {
+  const el = nm[n.id].el;
+
+  el.addEventListener('mouseenter', () => {
+    resetAll();
+    // Dim everyone
+    nodes.forEach(nn => nm[nn.id].el.classList.add('dimmed'));
+    svgPaths.forEach(p => { if (p) p.style.opacity = '0.04'; });
+
+    // Highlight self
+    el.classList.remove('dimmed');
+    el.classList.add('hovered');
+
+    // Process connections
+    (adj[n.id] || []).forEach(({ id, s, dir, i }) => {
+      const neighbor = nm[id];
+      if (!neighbor) return;
+
+      neighbor.el.classList.remove('dimmed');
+      neighbor.el.classList.add('lit');
+
+      // Score badge
+      const { color } = scoreStyle(s);
+      const badge = document.createElement('div');
+      badge.className = 'score-badge';
+      badge.style.background = color;
+      const arrow = dir === 'out' ? '↓' : '↑';
+      const label = dir === 'out' ? '供应' : '采购';
+      badge.innerHTML = `<span class="dir-arrow">${arrow}${label}</span>${s}<span style="opacity:0.6;font-size:8px">/10</span>`;
+      neighbor.el.appendChild(badge);
+
+      // Highlight arrow
+      const p = svgPaths[i];
+      if (!p) return;
+      const { color: sc, marker } = scoreStyle(s);
+      p.style.opacity = '1';
+      p.setAttribute('stroke', sc + 'cc');
+      p.setAttribute('stroke-width', '2.8');
+      p.setAttribute('marker-end', `url(#${marker})`);
+    });
+  });
+
+  el.addEventListener('mouseleave', resetAll);
 });
 </script>
 </body>
