@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Supply Chain — Layer 1: Compute Infrastructure</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #07101d;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #e2e8f0;
+  min-width: 1240px;
+}
+
+header {
+  padding: 26px 52px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+header h1 {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #f8fafc;
+}
+header p {
+  font-size: 12px;
+  color: #475569;
+  margin-top: 5px;
+  letter-spacing: 0.01em;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 52px;
+  gap: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  flex-wrap: wrap;
+  background: rgba(255,255,255,0.015);
+}
+.lpill {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; color: #94a3b8; white-space: nowrap;
+}
+.lpill-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.badges { margin-left: auto; display: flex; gap: 14px; align-items: center; font-size: 11px; color: #64748b; }
+.badge { display: flex; align-items: center; gap: 5px; }
+.b-sq { width: 22px; height: 13px; border-radius: 3px; }
+.b-user { border: 2px solid rgba(255,255,255,0.55); background: rgba(255,255,255,0.04); }
+.b-add  { border: 1px dashed rgba(255,255,255,0.28); }
+
+#wrap { padding: 24px 52px 40px; overflow-x: auto; }
+#diagram { position: relative; width: 1140px; }
+
+.band {
+  position: absolute; left: -10px; right: -10px;
+  border-radius: 14px; pointer-events: none;
+}
+
+.card {
+  position: absolute; width: 160px;
+  border-radius: 11px; padding: 11px 13px 13px;
+  cursor: default;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.card:hover {
+  transform: translateY(-4px) scale(1.025);
+  box-shadow: 0 14px 44px rgba(0,0,0,0.55);
+  z-index: 999;
+}
+.card.user { border-style: solid; border-width: 2px; }
+.card.add  { border-style: dashed; border-width: 1px; }
+
+.card.l0.user  { border-color: #8b5cf6; background: rgba(139,92,246,0.11); }
+.card.l0.add   { border-color: rgba(139,92,246,0.38); background: rgba(139,92,246,0.05); }
+.card.l0 .tic  { color: #a78bfa; }
+
+.card.l1.user  { border-color: #3b82f6; background: rgba(59,130,246,0.11); }
+.card.l1.add   { border-color: rgba(59,130,246,0.38); background: rgba(59,130,246,0.05); }
+.card.l1 .tic  { color: #60a5fa; }
+
+.card.l2.user  { border-color: #06b6d4; background: rgba(6,182,212,0.11); }
+.card.l2.add   { border-color: rgba(6,182,212,0.38); background: rgba(6,182,212,0.05); }
+.card.l2 .tic  { color: #22d3ee; }
+
+.card.l3.user  { border-color: #10b981; background: rgba(16,185,129,0.11); }
+.card.l3.add   { border-color: rgba(16,185,129,0.38); background: rgba(16,185,129,0.05); }
+.card.l3 .tic  { color: #34d399; }
+
+.card.l4.user  { border-color: #f59e0b; background: rgba(245,158,11,0.11); }
+.card.l4.add   { border-color: rgba(245,158,11,0.38); background: rgba(245,158,11,0.05); }
+.card.l4 .tic  { color: #fbbf24; }
+
+.card.l5.user  { border-color: #ef4444; background: rgba(239,68,68,0.11); }
+.card.l5.add   { border-color: rgba(239,68,68,0.38); background: rgba(239,68,68,0.05); }
+.card.l5 .tic  { color: #f87171; }
+
+.tic  { font-size: 14px; font-weight: 800; letter-spacing: 0.05em; line-height: 1; }
+.co   { font-size: 9px; color: #64748b; margin-top: 3px; line-height: 1.3; }
+.desc { font-size: 9.5px; color: #cbd5e1; margin-top: 7px; line-height: 1.5; }
+
+#arrows {
+  position: absolute; top: 0; left: 0;
+  width: 100%; overflow: visible; pointer-events: none;
+}
+
+.note-box {
+  margin: 12px 52px 0;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.25);
+  font-size: 11.5px;
+  color: #fbbf24;
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>AI Layer 1 — Compute Infrastructure Supply Chain</h1>
+  <p>Most upstream (top) → AI cloud compute consumers (bottom) &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; Hover over any card for details</p>
+</header>
+
+<div class="top-bar">
+  <span class="lpill"><span class="lpill-dot" style="background:#8b5cf6"></span>0 · Equipment &amp; Process Tools</span>
+  <span class="lpill"><span class="lpill-dot" style="background:#3b82f6"></span>1 · EDA / IP / Foundry</span>
+  <span class="lpill"><span class="lpill-dot" style="background:#06b6d4"></span>2 · Core Compute &amp; Memory</span>
+  <span class="lpill"><span class="lpill-dot" style="background:#10b981"></span>3 · Networking &amp; Optical</span>
+  <span class="lpill"><span class="lpill-dot" style="background:#f59e0b"></span>4 · Server Infrastructure</span>
+  <span class="lpill"><span class="lpill-dot" style="background:#ef4444"></span>5 · AI Cloud Providers</span>
+  <div class="badges">
+    <span class="badge"><span class="b-sq b-user"></span>Your picks</span>
+    <span class="badge"><span class="b-sq b-add"></span>Analyst adds</span>
+  </div>
+</div>
+
+<div class="note-box">
+  ⚠️ <strong>Everpure</strong> — 未能识别此 ticker 对应的上市公司（AI产业链范畴内）。如果是水冷/散热相关公司，可能是 Pentair 旗下品牌，并非独立上市。请告知实际公司名或完整 ticker，将补充进图中。
+</div>
+
+<div id="wrap">
+  <div id="diagram">
+    <svg id="arrows"></svg>
+  </div>
+</div>
+
+<script>
+const CW = 160, CH = 92;
+
+// Layer Y positions
+const LY = [30, 200, 378, 566, 740, 870];
+const LCOLORS = ['#8b5cf6','#3b82f6','#06b6d4','#10b981','#f59e0b','#ef4444'];
+
+const nodes = [
+  // ── Layer 0: Equipment ───────────────────────────────────────────────────
+  {id:'KLAC', co:'KLA Corporation',          desc:'Wafer inspection &\nmetrology tools\n→ finds defects during fab',                              l:0, x:10,  u:true },
+  {id:'ONTO', co:'Onto Innovation',           desc:'Optical metrology &\nprocess control systems\n→ measures film thickness',                     l:0, x:200, u:true },
+  {id:'AMAT', co:'Applied Materials',         desc:'CVD/PVD deposition +\netch + ion implant tools\n→ largest equipment co.',                     l:0, x:390, u:false},
+  {id:'LRCX', co:'Lam Research',              desc:'Etch & deposition\nprocess equipment\n→ critical for 3nm/2nm',                               l:0, x:580, u:false},
+  {id:'ASML', co:'ASML',                      desc:'EUV lithography machines\n→ only supplier globally\n→ biggest supply chokepoint',             l:0, x:770, u:false},
+
+  // ── Layer 1: EDA / IP / Foundry ──────────────────────────────────────────
+  {id:'CDNS', co:'Cadence Design Systems',    desc:'EDA software & silicon IP\n→ every chip is designed\n   using Cadence tools',                 l:1, x:10,  u:false},
+  {id:'SNPS', co:'Synopsys',                  desc:'EDA + verification tools\n& security IP\n→ design/synthesis SW',                             l:1, x:210, u:false},
+  {id:'RMBS', co:'Rambus',                    desc:'HBM memory interface\nIP licensing\n→ royalties from NVDA/AMD',                              l:1, x:470, u:true },
+  {id:'INTC', co:'Intel',                     desc:'x86 CPU + Gaudi 3 AI GPU\n+ Intel Foundry (IFS)\n→ IDM: designs & fabs',                     l:1, x:730, u:true },
+
+  // ── Layer 2: Core Compute & Memory ───────────────────────────────────────
+  {id:'NVDA', co:'NVIDIA',                    desc:'GPU H100 / B200 / GB200\nCUDA ecosystem\n+ InfiniBand networking',                           l:2, x:10,  u:true },
+  {id:'AVGO', co:'Broadcom',                  desc:'Switch ASICs (Tomahawk)\nCustom AI XPUs for\nGoogle, Meta, Apple',                           l:2, x:200, u:true },
+  {id:'MCHP', co:'Microchip Technology',      desc:'MCU + FPGA + timing ICs\nfor DC power management\n& PCIe control',                           l:2, x:390, u:true },
+  {id:'QUIK', co:'QuickLogic',                desc:'eFPGA + sensor hub IP\nEdge AI / IoT processing\n→ small-cap niche play',                    l:2, x:570, u:true },
+  {id:'SIMO', co:'Silicon Motion Technology', desc:'NAND flash controllers\n& SSD firmware IP\n→ enterprise/DC storage',                         l:2, x:750, u:true },
+  {id:'MU',   co:'Micron Technology',         desc:'HBM3E memory chips\nDRAM + NAND flash\n→ inside every NVDA GPU',                            l:2, x:950, u:false},
+
+  // ── Layer 3: Networking & Optical ────────────────────────────────────────
+  {id:'AAOI', co:'Applied Optoelectronics',   desc:'Optical transceivers\n& laser diode modules\n→ 100G/400G for DCs',                          l:3, x:10,  u:true },
+  {id:'NOK',  co:'Nokia',                     desc:'IP routing & optical\ntransport networking\n→ DC interconnect infra',                        l:3, x:210, u:true },
+  {id:'COHR', co:'Coherent Corp',             desc:'800G optical modules\n& transceiver chips\n→ direct AAOI competitor',                        l:3, x:420, u:false},
+  {id:'MRVL', co:'Marvell Technology',        desc:'Custom cloud ASICs\n+ optical DSP chips\n→ AMZN/MSFT custom chips',                         l:3, x:640, u:false},
+  {id:'ANET', co:'Arista Networks',           desc:'Ethernet switches for\nAI/ML cluster fabric\n→ hyperscaler preferred',                       l:3, x:870, u:false},
+
+  // ── Layer 4: Server Infrastructure ───────────────────────────────────────
+  {id:'SMCI', co:'Super Micro Computer',      desc:'GPU-optimized server\nsystems & liquid-cooled\nrack solutions',                              l:4, x:10,  u:false},
+  {id:'P',    co:'Everpure (fmr. Pure Storage)',desc:'All-flash storage for\nAI training pipelines\nFlashBlade//EXA + STaaS',                    l:4, x:220, u:true },
+  {id:'VRT',  co:'Vertiv Holdings',           desc:'Power distribution &\nliquid cooling systems\n→ every AI data center',                       l:4, x:430, u:false},
+
+  // ── Layer 5: AI Cloud Providers ──────────────────────────────────────────
+  {id:'AMZN', co:'Amazon / AWS',              desc:'AWS cloud + Trainium2\n& Inferentia2 custom ASICs\n→ largest cloud',                         l:5, x:10,  u:true },
+  {id:'NBIS', co:'Nebius Group',              desc:'AI-native GPU cloud\nbuilt for ML workloads\n→ ex-Yandex, fast growth',                      l:5, x:230, u:true },
+  {id:'HUT',  co:'Hut 8',                     desc:'GPU cloud + HPC infra\n& Bitcoin mining\n→ compute infrastructure',                          l:5, x:450, u:true },
+  {id:'IREN', co:'Iris Energy',               desc:'AI cloud GPU clusters\n+ green-energy HPC\n→ renewable-powered DC',                          l:5, x:655, u:true },
+  {id:'MSFT', co:'Microsoft Azure',           desc:'Azure AI + OpenAI\nMaia 2 custom ASIC\n→ #2 cloud, Copilot suite',                          l:5, x:870, u:false},
+];
+
+// Edges: supply relationships (upstream → downstream)
+const edges = [
+  // Equipment tools enable INTC foundry (and TSMC, Samsung — but they're not US listed)
+  {f:'KLAC', t:'INTC'}, {f:'ONTO', t:'INTC'}, {f:'AMAT', t:'INTC'},
+  {f:'LRCX', t:'INTC'}, {f:'ASML', t:'INTC'},
+  // EDA design tools feed all fabless chip designers
+  {f:'CDNS', t:'NVDA'}, {f:'SNPS', t:'NVDA'},
+  {f:'CDNS', t:'AVGO'}, {f:'SNPS', t:'AVGO'},
+  // Rambus licenses HBM interface IP to GPU makers
+  {f:'RMBS', t:'NVDA'}, {f:'RMBS', t:'AVGO'},
+  // Micron HBM is stacked directly into NVIDIA GPUs
+  {f:'MU',   t:'NVDA'},
+  // INTC CPU goes into every server
+  {f:'INTC', t:'SMCI'},
+  // NVIDIA GPU → all major cloud customers
+  {f:'NVDA', t:'AMZN'}, {f:'NVDA', t:'NBIS'}, {f:'NVDA', t:'HUT'},
+  {f:'NVDA', t:'IREN'}, {f:'NVDA', t:'MSFT'},
+  // Broadcom switch ASICs + custom XPUs → hyperscalers
+  {f:'AVGO', t:'AMZN'}, {f:'AVGO', t:'MSFT'},
+  // MCU timing ICs + NAND controllers go into server boards
+  {f:'MCHP', t:'SMCI'}, {f:'SIMO', t:'SMCI'},
+  // Optical transceivers feed into network switches
+  {f:'AAOI', t:'NOK'},  {f:'AAOI', t:'ANET'},
+  {f:'COHR', t:'NOK'},  {f:'COHR', t:'ANET'},
+  // Marvell custom ASICs for cloud (Trainium-level engagements)
+  {f:'MRVL', t:'AMZN'}, {f:'MRVL', t:'MSFT'},
+  // Network switches connect DCs
+  {f:'ANET', t:'AMZN'}, {f:'ANET', t:'NBIS'}, {f:'ANET', t:'MSFT'},
+  {f:'NOK',  t:'AMZN'},
+  // GPU servers shipped to cloud builders
+  {f:'SMCI', t:'NBIS'}, {f:'SMCI', t:'HUT'}, {f:'SMCI', t:'IREN'},
+  // Everpure all-flash storage → AI cloud (training pipeline storage, FlashBlade//EXA)
+  {f:'P',    t:'AMZN'}, {f:'P',   t:'NBIS'}, {f:'P',   t:'HUT'}, {f:'P',   t:'IREN'},
+  // Power & cooling infrastructure
+  {f:'VRT',  t:'AMZN'}, {f:'VRT', t:'NBIS'}, {f:'VRT', t:'HUT'}, {f:'VRT', t:'IREN'},
+];
+
+// ── Render ──────────────────────────────────────────────────────────────────
+
+const diagram = document.getElementById('diagram');
+const totalH = LY[5] + CH + 30;
+diagram.style.height = totalH + 'px';
+
+// Background bands
+LY.forEach((y, i) => {
+  const b = document.createElement('div');
+  b.className = 'band';
+  b.style.cssText = `top:${y - 12}px; height:${CH + 24}px; background:${LCOLORS[i]}10;`;
+  diagram.appendChild(b);
+});
+
+// Node map for arrow coord lookup
+const nm = {};
+
+// Render cards
+nodes.forEach(n => {
+  const card = document.createElement('div');
+  card.className = `card l${n.l} ${n.u ? 'user' : 'add'}`;
+  card.style.left = n.x + 'px';
+  card.style.top  = LY[n.l] + 'px';
+  const lines = n.desc.split('\n');
+  card.innerHTML =
+    `<div class="tic">${n.id}</div>` +
+    `<div class="co">${n.co}</div>` +
+    `<div class="desc">${lines.join('<br>')}</div>`;
+  diagram.appendChild(card);
+  nm[n.id] = { x: n.x, y: LY[n.l] };
+});
+
+// Draw arrows
+const svg = document.getElementById('arrows');
+svg.setAttribute('width', '1140');
+svg.setAttribute('height', String(totalH));
+
+const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+defs.innerHTML = `
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5"
+          markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="rgba(100,116,139,0.55)"/>
+  </marker>`;
+svg.appendChild(defs);
+
+edges.forEach(e => {
+  const s = nm[e.f], t = nm[e.t];
+  if (!s || !t) return;
+  const x1 = s.x + CW / 2;
+  const y1 = s.y + CH;
+  const x2 = t.x + CW / 2;
+  const y2 = t.y - 1;
+  const mid = (y1 + y2) / 2;
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', `M${x1},${y1} C${x1},${mid} ${x2},${mid} ${x2},${y2}`);
+  path.setAttribute('stroke', 'rgba(100,116,139,0.20)');
+  path.setAttribute('stroke-width', '1.5');
+  path.setAttribute('fill', 'none');
+  path.setAttribute('marker-end', 'url(#ah)');
+  svg.appendChild(path);
+});
+</script>
+</body>
+</html>
