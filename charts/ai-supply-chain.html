@@ -486,31 +486,72 @@ const nodes = [
 ];
 
 const edges = [
+  // ── L0 Equipment → L1 Intel (only IDM in chart) ──────────────────────────
   {f:'KLAC',t:'INTC',s:7}, {f:'ONTO',t:'INTC',s:5}, {f:'AMAT',t:'INTC',s:8},
   {f:'LRCX',t:'INTC',s:7}, {f:'ASML',t:'INTC',s:9},
+
+  // ── L1 EDA tools → L2 chip designers ─────────────────────────────────────
   {f:'CDNS',t:'NVDA',s:8}, {f:'SNPS',t:'NVDA',s:8},
   {f:'CDNS',t:'AVGO',s:8}, {f:'SNPS',t:'AVGO',s:7},
-  {f:'RMBS',t:'NVDA',s:6}, {f:'RMBS',t:'AVGO',s:5},
-  {f:'MU',  t:'NVDA',s:9},
-  {f:'INTC',t:'SMCI',s:7},
-  {f:'NVDA',t:'AMZN',s:9}, {f:'NVDA',t:'NBIS',s:10}, {f:'NVDA',t:'HUT',s:9},
-  {f:'NVDA',t:'IREN',s:9}, {f:'NVDA',t:'MSFT',s:9},
-  {f:'AVGO',t:'AMZN',s:8}, {f:'AVGO',t:'MSFT',s:7},
-  {f:'MCHP',t:'SMCI',s:6}, {f:'SIMO',t:'SMCI',s:7},
-  {f:'AAOI',t:'NOK', s:6}, {f:'AAOI',t:'ANET',s:7},
-  {f:'COHR',t:'NOK', s:7}, {f:'COHR',t:'ANET',s:8},
-  {f:'MRVL',t:'AMZN',s:9}, {f:'MRVL',t:'MSFT',s:7},
-  {f:'ANET',t:'AMZN',s:9}, {f:'ANET',t:'NBIS',s:8}, {f:'ANET',t:'MSFT',s:9},
-  {f:'NOK', t:'AMZN',s:6},
-  {f:'SMCI',t:'NBIS',s:9}, {f:'SMCI',t:'HUT',s:8}, {f:'SMCI',t:'IREN',s:8},
-  {f:'P',   t:'AMZN',s:7}, {f:'P',   t:'NBIS',s:8}, {f:'P',   t:'HUT',s:6}, {f:'P',   t:'IREN',s:6},
-  {f:'VRT', t:'AMZN',s:8}, {f:'VRT', t:'NBIS',s:7}, {f:'VRT', t:'HUT',s:8}, {f:'VRT', t:'IREN',s:8},
-  // AMD
   {f:'CDNS',t:'AMD', s:8}, {f:'SNPS',t:'AMD', s:8},
-  {f:'RMBS',t:'AMD', s:6}, {f:'MU',  t:'AMD', s:8},
+
+  // ── L1 IP licensing → L2 chip designers ──────────────────────────────────
+  // RMBS: HBM controller IP licensed to GPU/ASIC makers
+  {f:'RMBS',t:'NVDA',s:6}, {f:'RMBS',t:'AVGO',s:5}, {f:'RMBS',t:'AMD',s:6},
+  // ARM: CPU ISA licensed to chip designers
+  // NVDA Grace CPU (GH200/GB200) uses 72× ARM Neoverse V2 cores → score 9
+  {f:'ARM', t:'NVDA',s:9},
+  // Broadcom holds ARMv8 arch license for networking ASICs → score 7
+  {f:'ARM', t:'AVGO',s:7},
+  // Marvell ASIC platform explicitly uses ARM CPU subsystems → score 7
+  {f:'ARM', t:'MRVL',s:7},
+  // AWS Graviton (ARM-based), Azure Cobalt (ARM-based) → score 8/7
+  {f:'ARM', t:'AMZN',s:8}, {f:'ARM', t:'MSFT',s:7},
+  // INTC: Intel Xeon heavily adopted by AWS & Azure
+  {f:'INTC',t:'AMZN',s:7}, {f:'INTC',t:'MSFT',s:8},
+
+  // ── L2 Memory → L2 GPU (HBM stacked inside GPU packages) ─────────────────
+  {f:'MU',  t:'NVDA',s:9}, {f:'MU',  t:'AMD', s:8},
+
+  // ── L2 Compute → L4 Server / L5 Cloud ────────────────────────────────────
+  // NVDA: SMCI is NVIDIA's primary GB200 server integrator (25% Blackwell supply)
+  {f:'NVDA',t:'SMCI',s:10},
+  {f:'NVDA',t:'AMZN',s:9}, {f:'NVDA',t:'NBIS',s:10},
+  {f:'NVDA',t:'HUT', s:9}, {f:'NVDA',t:'IREN',s:9}, {f:'NVDA',t:'MSFT',s:9},
+  // INTC: IDM also feeds server platform
+  {f:'INTC',t:'SMCI',s:7},
+  // AVGO: Tomahawk switches + custom XPUs for hyperscalers
+  {f:'AVGO',t:'AMZN',s:8}, {f:'AVGO',t:'MSFT',s:7}, {f:'AVGO',t:'NBIS',s:6},
+  // AMD: EPYC CPUs + MI300X GPUs
   {f:'AMD', t:'AMZN',s:8}, {f:'AMD', t:'MSFT',s:7}, {f:'AMD', t:'SMCI',s:7},
-  // ARM
-  {f:'ARM', t:'AMZN',s:8}, {f:'ARM', t:'MSFT',s:7}, {f:'ARM', t:'NBIS',s:5},
+  {f:'AMD', t:'IREN',s:6},  // IREN fleet includes AMD MI350X alongside NVDA
+  // L2 controllers → L4 servers
+  {f:'MCHP',t:'SMCI',s:6}, {f:'SIMO',t:'SMCI',s:7}, {f:'MU',  t:'SMCI',s:6},
+
+  // ── L3 Networking ─────────────────────────────────────────────────────────
+  // AAOI: AWS holds warrants, long-term 800G supply deal → score 9
+  {f:'AAOI',t:'AMZN',s:9}, {f:'AAOI',t:'MSFT',s:5},
+  {f:'AAOI',t:'NOK', s:6}, {f:'AAOI',t:'ANET',s:7},
+  // COHR: 800G ZR modules — AWS & Azure are top hyperscaler buyers
+  {f:'COHR',t:'AMZN',s:8}, {f:'COHR',t:'MSFT',s:8},
+  {f:'COHR',t:'NOK', s:7}, {f:'COHR',t:'ANET',s:8},
+  // MRVL: custom ASICs for Amazon Trainium, Azure Maia networking
+  {f:'MRVL',t:'AMZN',s:9}, {f:'MRVL',t:'MSFT',s:8},
+  {f:'MRVL',t:'NBIS',s:6},
+  // ANET: Ethernet switching for AI clusters
+  {f:'ANET',t:'AMZN',s:9}, {f:'ANET',t:'MSFT',s:9},
+  {f:'ANET',t:'NBIS',s:8}, {f:'ANET',t:'HUT', s:7}, {f:'ANET',t:'IREN',s:7},
+  // NOK: IP routing for hyperscaler backbone
+  {f:'NOK', t:'AMZN',s:6}, {f:'NOK', t:'MSFT',s:5},
+
+  // ── L4 Server Infra → L5 Cloud ────────────────────────────────────────────
+  {f:'SMCI',t:'NBIS',s:9}, {f:'SMCI',t:'HUT',s:8}, {f:'SMCI',t:'IREN',s:8},
+  // P (Everpure): Azure Native service + AWS + AI cloud providers
+  {f:'P',   t:'AMZN',s:7}, {f:'P',   t:'MSFT',s:8},
+  {f:'P',   t:'NBIS',s:8}, {f:'P',   t:'HUT', s:6}, {f:'P',   t:'IREN',s:6},
+  // VRT: power + liquid cooling for all major DCs
+  {f:'VRT', t:'AMZN',s:8}, {f:'VRT', t:'MSFT',s:6},
+  {f:'VRT', t:'NBIS',s:7}, {f:'VRT', t:'HUT', s:8}, {f:'VRT', t:'IREN',s:8},
 ];
 
 const info = {
