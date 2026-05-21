@@ -46,12 +46,12 @@ const SYMBOLS = {
   TXN:  'NASDAQ:TXN',   // Texas Instruments — motor control ICs
   ADI:  'NASDAQ:ADI',   // Analog Devices — IMU/MEMS
   CGNX: 'NASDAQ:CGNX',  // Cognex — machine vision
-  OUST: 'NYSE:OUST',    // Ouster — LiDAR
+  OUST: 'NASDAQ:OUST',  // Ouster — LiDAR
   AEVA: 'NASDAQ:AEVA',  // Aeva — FMCW LiDAR
   TDY:  'NYSE:TDY',     // Teledyne — FLIR thermal/vision
   ROK:  'NYSE:ROK',     // Rockwell Automation
   EMR:  'NYSE:EMR',     // Emerson Electric
-  ABB:  'NYSE:ABB',     // ABB Ltd (ADR)
+  ABB:  'OTC:ABBNY',    // ABB Ltd — US ADR trades as ABBNY on OTC
   TER:  'NASDAQ:TER',   // Teradyne — Universal Robots + MiR
   SYM:  'NASDAQ:SYM',   // Symbotic — warehouse robotics
   ISRG: 'NASDAQ:ISRG',  // Intuitive Surgical — da Vinci
@@ -59,7 +59,7 @@ const SYMBOLS = {
   SYK:  'NYSE:SYK',     // Stryker — Mako orthopedic
   TSLA: 'NASDAQ:TSLA',  // Tesla — Optimus humanoid
   AVAV: 'NASDAQ:AVAV',  // AeroVironment — drones
-  WMT:  'NYSE:WMT',     // Walmart — Symbotic deployment
+  WMT:  'NASDAQ:WMT',   // Walmart — Symbotic deployment
 };
 
 // ── HTTP + WebSocket server ───────────────────────────────────────────────────
