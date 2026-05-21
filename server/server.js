@@ -1,6 +1,8 @@
 const TradingView = require('@mathieuc/tradingview');
 const http = require('http');
 const WebSocket = require('ws');
+const fs = require('fs');
+const path = require('path');
 
 const PORT = 8080;
 
@@ -39,12 +41,22 @@ const SYMBOLS = {
 };
 
 // ── HTTP + WebSocket server ───────────────────────────────────────────────────
+const HTML_PATH = path.join(__dirname, '..', 'charts', 'ai-supply-chain.html');
+
 const httpServer = http.createServer((req, res) => {
-  res.writeHead(200, {
-    'Content-Type': 'text/plain',
-    'Access-Control-Allow-Origin': '*',
-  });
-  res.end('AI Supply Chain — TradingView Bridge running\n');
+  // Serve the chart HTML at root
+  if (req.url === '/' || req.url === '/index.html') {
+    fs.readFile(HTML_PATH, (err, data) => {
+      if (err) {
+        res.writeHead(404); res.end('HTML not found: ' + HTML_PATH); return;
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(data);
+    });
+    return;
+  }
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('AI Supply Chain server running — open http://localhost:8080\n');
 });
 
 const wss = new WebSocket.Server({ server: httpServer });
