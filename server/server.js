@@ -34,6 +34,8 @@ const SYMBOLS = {
   HUT:  'NASDAQ:HUT',
   IREN: 'NASDAQ:IREN',
   MSFT: 'NASDAQ:MSFT',
+  AMD:  'NASDAQ:AMD',
+  ARM:  'NASDAQ:ARM',
 };
 
 // ── HTTP + WebSocket server ───────────────────────────────────────────────────

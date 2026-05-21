@@ -74,7 +74,7 @@ header {
 @keyframes wsPulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
 
 #wrap { padding: 24px 52px 40px; overflow-x: auto; transition: padding-right 0.3s ease; }
-#diagram { position: relative; width: 1140px; }
+#diagram { position: relative; width: 1320px; }
 
 .band {
   position: absolute; left: -10px; right: -10px;
@@ -462,12 +462,14 @@ const nodes = [
   {id:'SNPS', co:'Synopsys',                    desc:'EDA + 验证工具\n与安全 IP\n→ 芯片综合/物理实现',            l:1, x:210, u:false},
   {id:'RMBS', co:'Rambus',                      desc:'HBM 内存接口\nIP 授权\n→ 向 NVDA/AMD 收版税',             l:1, x:470, u:true },
   {id:'INTC', co:'Intel',                       desc:'x86 CPU + Gaudi 3 AI GPU\n+ 英特尔代工 (IFS)\n→ IDM：自设计自制造', l:1, x:730, u:true },
+  {id:'ARM',  co:'Arm Holdings',               desc:'CPU 架构 IP 授权\n→ 云/移动/边缘芯片\n   均建立在 ARM ISA 上', l:1, x:920, u:true },
   {id:'NVDA', co:'NVIDIA',                      desc:'GPU H100/B200/GB200\nCUDA 生态系统\n+ InfiniBand 网络',     l:2, x:10,  u:true },
   {id:'AVGO', co:'Broadcom',                    desc:'交换机 ASIC（Tomahawk）\n为谷歌/Meta/苹果\n定制 AI XPU',    l:2, x:200, u:true },
   {id:'MCHP', co:'Microchip Technology',        desc:'MCU + FPGA + 时钟 IC\n数据中心电源管理\n& PCIe 控制',       l:2, x:390, u:true },
   {id:'QUIK', co:'QuickLogic',                  desc:'eFPGA + 传感器集线器 IP\n边缘 AI / IoT 处理\n→ 小市值细分',  l:2, x:570, u:true },
   {id:'SIMO', co:'Silicon Motion Technology',   desc:'NAND 闪存控制器\n& SSD 固件 IP\n→ 企业级/数据中心存储',     l:2, x:750, u:true },
   {id:'MU',   co:'Micron Technology',           desc:'HBM3E 内存芯片\nDRAM + NAND 闪存\n→ 封装在每颗 NVDA GPU 内', l:2, x:950, u:false},
+  {id:'AMD',  co:'Advanced Micro Devices',      desc:'MI300X GPU + EPYC CPU\n→ NVDA 最直接竞争者\n   AI 训练/推理加速',  l:2, x:1140,u:true },
   {id:'AAOI', co:'Applied Optoelectronics',     desc:'光学收发器\n& 激光二极管模块\n→ 100G/400G 数据中心',        l:3, x:10,  u:true },
   {id:'NOK',  co:'Nokia',                       desc:'IP 路由 & 光传输\n网络设备\n→ 数据中心互联基础设施',         l:3, x:210, u:true },
   {id:'COHR', co:'Coherent Corp',               desc:'800G 光学模块\n& 收发器芯片\n→ AAOI 直接竞争对手',          l:3, x:420, u:false},
@@ -503,6 +505,12 @@ const edges = [
   {f:'SMCI',t:'NBIS',s:9}, {f:'SMCI',t:'HUT',s:8}, {f:'SMCI',t:'IREN',s:8},
   {f:'P',   t:'AMZN',s:7}, {f:'P',   t:'NBIS',s:8}, {f:'P',   t:'HUT',s:6}, {f:'P',   t:'IREN',s:6},
   {f:'VRT', t:'AMZN',s:8}, {f:'VRT', t:'NBIS',s:7}, {f:'VRT', t:'HUT',s:8}, {f:'VRT', t:'IREN',s:8},
+  // AMD
+  {f:'CDNS',t:'AMD', s:8}, {f:'SNPS',t:'AMD', s:8},
+  {f:'RMBS',t:'AMD', s:6}, {f:'MU',  t:'AMD', s:8},
+  {f:'AMD', t:'AMZN',s:8}, {f:'AMD', t:'MSFT',s:7}, {f:'AMD', t:'SMCI',s:7},
+  // ARM
+  {f:'ARM', t:'AMZN',s:8}, {f:'ARM', t:'MSFT',s:7}, {f:'ARM', t:'NBIS',s:5},
 ];
 
 const info = {
@@ -533,6 +541,8 @@ const info = {
   NBIS: { summary: 'Nebius Group 是前 Yandex N.V. 旗下 AI 基础设施云公司，2024 年剥离俄罗斯资产后重组上市。定位为 AI 原生 GPU 云，提供 Managed GPU 集群、AI 训练/推理平台及 AI 开发工具。NVIDIA 直接战略投资，Everpure 和 Arista 是其核心硬件供应商。高速成长但仍处亏损阶段，是 NVDA 产业链纯度最高的二线受益标的之一。' },
   HUT:  { summary: 'Hut 8 是加拿大数字基础设施公司，正从比特币挖矿转型为高性能计算（HPC）与 AI GPU 云。持有大量自有电力合同和数据中心资产，是 AI 算力基础设施的"地主"型公司。转型叙事和持有比特币的资产配置特性，使其同时受到 AI 投资者和比特币多头的关注，属于双重催化剂驱动的标的。' },
   IREN: { summary: 'Iris Energy 专注于可再生能源驱动的 AI 云 GPU 集群，同时经营比特币挖矿业务（双轨并行）。自建数据中心使用水电/太阳能，单位电力成本极低（约 3 美分/度），支撑 GPU 云高毛利。绿色能源 + AI 算力双重叙事是机构买入逻辑，在碳排放监管趋严的背景下，低碳算力基础设施具有长期竞争壁垒。' },
+  AMD:  { summary: 'Advanced Micro Devices 是 NVIDIA 在 AI 算力领域最直接的挑战者。MI300X GPU（每颗集成 192GB HBM3）在 AI 推理性能上与 H100 旗鼓相当，且价格更具竞争力；EPYC CPU 在数据中心服务器市占率持续蚕食英特尔份额，已超 30%。AMD 的 ROCm 软件生态是追赶 CUDA 的关键战场，目前差距仍大但在快速收窄。AWS、微软 Azure、Meta 均已采购 MI300X 作为 NVDA 的补充/替代。2025 年 AI GPU 营收预计超 50 亿美元，是最值得关注的 NVDA 替代受益标的。' },
+  ARM:  { summary: 'Arm Holdings 是全球最重要的 CPU 架构 IP 授权公司，旗下 ARM 指令集架构（ISA）是全球 99% 移动芯片和越来越多数据中心芯片的设计基础。亚马逊 Graviton、微软 Azure Cobalt、苹果 M 系列、高通骁龙全部基于 ARM 授权设计。商业模式为"躺收版税"：每颗芯片出货向设计公司收取许可费 + 版税，利润率极高。AI 推理场景对低功耗的需求推动 ARM 架构在数据中心快速渗透，是云厂商摆脱 x86 垄断的核心路径，长期受益于算力需求的多元化。' },
   MSFT: { summary: 'Microsoft Azure 是全球第二大云服务商，通过对 OpenAI 的独家合作掌握最领先 AI 模型访问权。Azure AI 服务、Microsoft 365 Copilot、GitHub Copilot 是其商业化 AI 变现主力，已开始贡献实质性收入。自研 Maia 2 AI 加速芯片战略性减少 NVIDIA 依赖，数据中心资本支出 2026 年超 1000 亿美元。AI 变现路径最清晰的超大规模科技公司之一。' },
 };
 
@@ -577,7 +587,7 @@ nodes.forEach(n => {
 
 // ── SVG arrows ────────────────────────────────────────────────────────────────
 const svg = document.getElementById('arrows');
-svg.setAttribute('width', '1140');
+svg.setAttribute('width', '1320');
 svg.setAttribute('height', String(totalH));
 
 function mkMarker(id, color) {
