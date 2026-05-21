@@ -85,13 +85,19 @@ function startTradingView() {
     markets.push(market);
 
     market.onData((data) => {
-      const price     = data.lp   ?? null;   // last price
-      const change    = data.rch  ?? null;   // price change vs prev close
-      const changePct = data.rchp ?? null;   // % change
-      const volume    = data.volume ?? null;
-      const high      = data.high_price ?? null;
-      const low       = data.low_price  ?? null;
+      const price     = data.lp               ?? null;
       const prevClose = data.prev_close_price ?? null;
+      const volume    = data.volume           ?? null;
+      const high      = data.high_price       ?? null;
+      const low       = data.low_price        ?? null;
+
+      // Compute standard "vs yesterday's close" change (same as most brokers/apps).
+      // TradingView's rchp is intraday-only (vs today's open), which diverges from
+      // the conventional definition users expect.
+      const change    = (price != null && prevClose != null) ? price - prevClose : null;
+      const changePct = (price != null && prevClose != null && prevClose !== 0)
+        ? (price - prevClose) / prevClose * 100
+        : null;
 
       if (price == null) return;
 
