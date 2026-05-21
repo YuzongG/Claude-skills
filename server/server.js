@@ -109,9 +109,12 @@ wss.on('connection', (ws) => {
 // ── TradingView connection ────────────────────────────────────────────────────
 let tvClient = null;
 let markets  = [];
+let lastDataAt = Date.now();
+let updateCount = 0;
 
 function startTradingView() {
   console.log('[TV] Connecting to TradingView…');
+  lastDataAt = Date.now();
 
   tvClient = new TradingView.Client();
   const session = new tvClient.Session.Quote({ fields: 'all' });
@@ -128,8 +131,6 @@ function startTradingView() {
       const low       = data.low_price        ?? null;
 
       // Compute standard "vs yesterday's close" change (same as most brokers/apps).
-      // TradingView's rchp is intraday-only (vs today's open), which diverges from
-      // the conventional definition users expect.
       const change    = (price != null && prevClose != null) ? price - prevClose : null;
       const changePct = (price != null && prevClose != null && prevClose !== 0)
         ? (price - prevClose) / prevClose * 100
@@ -137,13 +138,21 @@ function startTradingView() {
 
       if (price == null) return;
 
+      // Skip identical updates (same price as cached) to reduce noise
+      const cached = quoteCache[ticker];
+      const priceChanged = !cached || cached.price !== price;
+
       const quote = { ticker, price, change, changePct, volume, high, low, prevClose };
       quoteCache[ticker] = quote;
-      broadcast({ type: 'quote', ...quote });
+      lastDataAt = Date.now();
+      updateCount++;
 
-      process.stdout.write(
-        `\r[${ticker.padEnd(5)}] $${price.toFixed(2).padStart(10)}  ${(changePct ?? 0) >= 0 ? '+' : ''}${(changePct ?? 0).toFixed(2)}%   `
-      );
+      if (priceChanged) {
+        broadcast({ type: 'quote', ...quote });
+        process.stdout.write(
+          `\n[${new Date().toISOString().slice(11,19)}] [${ticker.padEnd(5)}] $${price.toFixed(2).padStart(10)}  ${(changePct ?? 0) >= 0 ? '+' : ''}${(changePct ?? 0).toFixed(2)}%`
+        );
+      }
     });
 
     market.onError((...args) => {
@@ -159,6 +168,26 @@ function startTradingView() {
 
   console.log(`[TV] Subscribed to ${Object.keys(SYMBOLS).length} symbols`);
 }
+
+// ── Stale-connection watchdog ────────────────────────────────────────────────
+// TradingView's quote session sometimes goes silent without throwing an error.
+// If no data for 60s, force a reconnect to restore the live feed.
+setInterval(() => {
+  const silent = (Date.now() - lastDataAt) / 1000;
+  if (silent > 60) {
+    console.log(`\n[TV] No data for ${silent.toFixed(0)}s — forcing reconnect (updates so far: ${updateCount})`);
+    cleanup();
+    lastDataAt = Date.now();   // prevent immediate re-trigger
+    updateCount = 0;
+    setTimeout(startTradingView, 1000);
+  }
+}, 30000);
+
+// Periodic status log every 60s so we can see the feed is alive
+setInterval(() => {
+  const silent = (Date.now() - lastDataAt) / 1000;
+  console.log(`\n[STATUS] updates=${updateCount}, silent=${silent.toFixed(0)}s, clients=${wss.clients.size}, cached=${Object.keys(quoteCache).length}`);
+}, 60000);
 
 function cleanup() {
   try { markets.forEach(m => m.close()); } catch (_) {}
