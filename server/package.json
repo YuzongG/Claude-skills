@@ -1,0 +1,14 @@
+{
+  "name": "ai-supply-chain-server",
+  "version": "1.0.0",
+  "description": "Local TradingView bridge — streams real-time quotes to the AI supply chain chart",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@mathieuc/tradingview": "^3.5.2",
+    "ws": "^8.18.0"
+  }
+}
