@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<title>AI 产业链 — 第一层：算力基础设施</title>
+<title>产业链图谱 — AI 算力 + 机器人</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -10,10 +10,61 @@ body {
   background: #07101d;
   font-family: 'PingFang SC', 'Hiragino Sans GB', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   color: #e2e8f0;
+  padding-left: 200px;
   min-width: 1240px;
   overflow-x: auto;
 }
 
+/* ── Sidebar ── */
+#sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: 200px;
+  background: #050a13;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  padding: 22px 12px;
+  z-index: 9500;
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.sidebar-brand {
+  display: flex; align-items: center; gap: 9px;
+  padding: 0 6px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 12px;
+}
+.sidebar-brand-icon { font-size: 18px; }
+.sidebar-brand-text {
+  font-size: 13px; font-weight: 800; color: #f1f5f9;
+  letter-spacing: 0.04em;
+}
+.sidebar-section {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #334155;
+  padding: 0 6px; margin: 6px 0 8px;
+}
+.tab-btn {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 11px; border-radius: 9px;
+  background: transparent; border: none; cursor: pointer;
+  color: #94a3b8;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+  margin-bottom: 4px;
+  width: 100%;
+}
+.tab-btn:hover { background: rgba(255,255,255,0.04); color: #cbd5e1; }
+.tab-btn.active {
+  background: rgba(59,130,246,0.12);
+  color: #f1f5f9;
+  box-shadow: inset 3px 0 0 #3b82f6;
+}
+.tab-icon { font-size: 20px; flex-shrink: 0; line-height: 1; }
+.tab-text { display: flex; flex-direction: column; gap: 2px; }
+.tab-label { font-size: 13px; font-weight: 700; line-height: 1.2; }
+.tab-sub   { font-size: 10px; color: #64748b; }
+.tab-btn.active .tab-sub { color: #94a3b8; }
+
+/* ── Header ── */
 header {
   padding: 26px 52px 14px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -58,7 +109,6 @@ header {
 .score-bar { display: flex; align-items: center; gap: 6px; }
 .score-swatch { width: 28px; height: 7px; border-radius: 4px; }
 
-/* ── WebSocket status bar ── */
 #ws-bar {
   padding: 7px 52px; font-size: 11px; font-weight: 500;
   display: flex; align-items: center; gap: 8px;
@@ -118,21 +168,17 @@ header {
 .card.l5.add   { border-color: rgba(239,68,68,0.38); background: rgba(239,68,68,0.05); }
 .card.l5 .tic  { color: #f87171; }
 
-/* Heat overlay — sits above background, below content */
 .heat-layer {
   position: absolute; inset: 0; pointer-events: none;
   transition: background 0.7s ease;
   z-index: 0;
 }
-
-/* Card content needs z-index to sit above heat layer */
 .tic, .co, .desc, .price-row { position: relative; z-index: 1; }
 
 .tic  { font-size: 14px; font-weight: 800; letter-spacing: 0.05em; line-height: 1; }
 .co   { font-size: 9px; color: #64748b; margin-top: 3px; line-height: 1.3; }
 .desc { font-size: 9.5px; color: #cbd5e1; margin-top: 6px; line-height: 1.45; }
 
-/* Real-time price row */
 .price-row {
   display: flex; align-items: baseline; justify-content: space-between;
   margin-top: 6px; padding-top: 5px;
@@ -146,7 +192,6 @@ header {
 .live-chg.neg { color: #f87171; }
 .live-chg.neu { color: #94a3b8; }
 
-/* Score badge */
 .score-badge {
   position: absolute; top: -12px; right: -8px;
   font-size: 10px; font-weight: 800;
@@ -206,7 +251,6 @@ header {
 .panel-ticker { font-size: 38px; font-weight: 900; letter-spacing: 0.04em; line-height: 1; }
 .panel-coname { font-size: 13px; color: #64748b; margin-top: 6px; }
 
-/* Live price in panel */
 .panel-live {
   display: flex; align-items: baseline; gap: 12px; margin-top: 10px;
 }
@@ -240,7 +284,6 @@ header {
 .rel-score-bar { height: 5px; border-radius: 3px; }
 .rel-score-num { font-size: 11px; font-weight: 700; width: 24px; text-align: right; }
 
-/* ── Action buttons ── */
 .action-btns { display: flex; gap: 10px; margin-bottom: 4px; }
 .action-btn {
   flex: 1; padding: 10px 8px; border-radius: 9px;
@@ -254,7 +297,6 @@ header {
 .action-btn.loading { opacity: 0.6; pointer-events: none; }
 .action-btn.active  { border-color: #3b82f6; color: #60a5fa; background: rgba(59,130,246,0.1); }
 
-/* ── Data sections ── */
 .data-section { margin-top: 16px; }
 .data-section.hidden { display: none; }
 
@@ -263,10 +305,7 @@ header {
   display: flex; flex-direction: column; gap: 5px;
 }
 .news-item:last-child { border-bottom: none; }
-.news-headline {
-  font-size: 12.5px; color: #e2e8f0; line-height: 1.55;
-  text-decoration: none; display: block;
-}
+.news-headline { font-size: 12.5px; color: #e2e8f0; line-height: 1.55; text-decoration: none; display: block; }
 .news-headline:hover { color: #60a5fa; }
 .news-meta { font-size: 10px; color: #475569; display: flex; gap: 10px; }
 .news-source { color: #64748b; font-weight: 600; }
@@ -298,7 +337,6 @@ header {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Settings Modal ── */
 #settings-overlay {
   display: none; position: fixed; inset: 0; z-index: 99000;
   background: rgba(0,0,0,0.72); backdrop-filter: blur(4px);
@@ -350,26 +388,38 @@ header {
 </head>
 <body>
 
+<!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
+<aside id="sidebar">
+  <div class="sidebar-brand">
+    <span class="sidebar-brand-icon">📊</span>
+    <span class="sidebar-brand-text">产业图谱</span>
+  </div>
+  <div class="sidebar-section">主题</div>
+  <button class="tab-btn" data-chart="ai">
+    <span class="tab-icon">🧠</span>
+    <div class="tab-text">
+      <div class="tab-label">AI 算力</div>
+      <div class="tab-sub">基础设施 · 29</div>
+    </div>
+  </button>
+  <button class="tab-btn" data-chart="robot">
+    <span class="tab-icon">🤖</span>
+    <div class="tab-text">
+      <div class="tab-label">机器人</div>
+      <div class="tab-sub">产业链 · 24</div>
+    </div>
+  </button>
+</aside>
+
 <header>
   <div class="header-left">
-    <h1>AI 第一层 — 算力基础设施产业链</h1>
-    <p>最上游（顶部）→ AI 云端算力消费方（底部） · 2026 · <strong>Hover</strong> 查看关联，<strong>点击</strong>查看业务详情</p>
+    <h1 id="page-title"></h1>
+    <p id="page-subtitle"></p>
   </div>
   <button id="settings-btn" title="API 设置">⚙</button>
 </header>
 
-<div class="top-bar">
-  <span class="lpill"><span class="lpill-dot" style="background:#8b5cf6"></span>0 · 半导体设备与工艺工具</span>
-  <span class="lpill"><span class="lpill-dot" style="background:#3b82f6"></span>1 · EDA / IP / 晶圆代工</span>
-  <span class="lpill"><span class="lpill-dot" style="background:#06b6d4"></span>2 · 核心算力与存储</span>
-  <span class="lpill"><span class="lpill-dot" style="background:#10b981"></span>3 · 网络与光互联</span>
-  <span class="lpill"><span class="lpill-dot" style="background:#f59e0b"></span>4 · 服务器基础设施</span>
-  <span class="lpill"><span class="lpill-dot" style="background:#ef4444"></span>5 · AI 云服务商</span>
-  <div class="badges">
-    <span class="badge"><span class="b-sq b-user"></span>你选的标的</span>
-    <span class="badge"><span class="b-sq b-add"></span>分析师补充</span>
-  </div>
-</div>
+<div class="top-bar" id="top-bar"></div>
 
 <div class="score-hint">
   <span>关联度评分（0–10）：</span>
@@ -437,10 +487,215 @@ header {
 const CW = 160, CH = 110;
 const LY = [30, 210, 398, 596, 780, 910];
 const LCOLORS = ['#8b5cf6','#3b82f6','#06b6d4','#10b981','#f59e0b','#ef4444'];
-const LNAMES  = ['半导体设备','EDA / IP / 代工','核心算力与存储','网络与光互联','服务器基础设施','AI 云服务商'];
+
+// ── Chart datasets ────────────────────────────────────────────────────────────
+const CHARTS = {
+
+  ai: {
+    title: 'AI 算力基础设施产业链',
+    subtitle: '最上游（顶部）→ AI 云端算力消费方（底部） · 2026 · <strong>Hover</strong> 查看关联，<strong>点击</strong>查看业务详情',
+    layerNames: ['半导体设备','EDA / IP / 代工','核心算力与存储','网络与光互联','服务器基础设施','AI 云服务商'],
+    width: 1320,
+    nodes: [
+      {id:'KLAC', co:'KLA Corporation',            desc:'晶圆缺陷检测\n与量测工具\n→ 制程良率管控核心',              l:0, x:10,  u:true },
+      {id:'ONTO', co:'Onto Innovation',             desc:'光学量测与\n过程控制系统\n→ 薄膜厚度精密测量',              l:0, x:200, u:true },
+      {id:'AMAT', co:'Applied Materials',           desc:'CVD/PVD 薄膜沉积\n+ 刻蚀 + 离子注入\n→ 最大半导体设备商',   l:0, x:390, u:false},
+      {id:'LRCX', co:'Lam Research',                desc:'刻蚀与沉积\n工艺设备\n→ 3nm/2nm 工艺不可缺',              l:0, x:580, u:false},
+      {id:'ASML', co:'ASML',                        desc:'EUV 光刻机\n→ 全球唯一供应商\n→ 最大供应瓶颈',             l:0, x:770, u:false},
+      {id:'CDNS', co:'Cadence Design Systems',      desc:'EDA 软件与硅 IP\n→ 每颗芯片设计\n   都用 Cadence 工具',     l:1, x:10,  u:false},
+      {id:'SNPS', co:'Synopsys',                    desc:'EDA + 验证工具\n与安全 IP\n→ 芯片综合/物理实现',            l:1, x:210, u:false},
+      {id:'RMBS', co:'Rambus',                      desc:'HBM 内存接口\nIP 授权\n→ 向 NVDA/AMD 收版税',             l:1, x:470, u:true },
+      {id:'INTC', co:'Intel',                       desc:'x86 CPU + Gaudi 3 AI GPU\n+ 英特尔代工 (IFS)\n→ IDM：自设计自制造', l:1, x:730, u:true },
+      {id:'ARM',  co:'Arm Holdings',                desc:'CPU 架构 IP 授权\n→ 云/移动/边缘芯片\n   均建立在 ARM ISA 上', l:1, x:920, u:true },
+      {id:'NVDA', co:'NVIDIA',                      desc:'GPU H100/B200/GB200\nCUDA 生态系统\n+ InfiniBand 网络',     l:2, x:10,  u:true },
+      {id:'AVGO', co:'Broadcom',                    desc:'交换机 ASIC（Tomahawk）\n为谷歌/Meta/苹果\n定制 AI XPU',    l:2, x:200, u:true },
+      {id:'MCHP', co:'Microchip Technology',        desc:'MCU + FPGA + 时钟 IC\n数据中心电源管理\n& PCIe 控制',       l:2, x:390, u:true },
+      {id:'QUIK', co:'QuickLogic',                  desc:'eFPGA + 传感器集线器 IP\n边缘 AI / IoT 处理\n→ 小市值细分',  l:2, x:570, u:true },
+      {id:'SIMO', co:'Silicon Motion Technology',   desc:'NAND 闪存控制器\n& SSD 固件 IP\n→ 企业级/数据中心存储',     l:2, x:750, u:true },
+      {id:'MU',   co:'Micron Technology',           desc:'HBM3E 内存芯片\nDRAM + NAND 闪存\n→ 封装在每颗 NVDA GPU 内', l:2, x:950, u:false},
+      {id:'AMD',  co:'Advanced Micro Devices',      desc:'MI300X GPU + EPYC CPU\n→ NVDA 最直接竞争者\n   AI 训练/推理加速', l:2, x:1140,u:true },
+      {id:'AAOI', co:'Applied Optoelectronics',     desc:'光学收发器\n& 激光二极管模块\n→ 100G/400G 数据中心',        l:3, x:10,  u:true },
+      {id:'NOK',  co:'Nokia',                       desc:'IP 路由 & 光传输\n网络设备\n→ 数据中心互联基础设施',         l:3, x:210, u:true },
+      {id:'COHR', co:'Coherent Corp',               desc:'800G 光学模块\n& 收发器芯片\n→ AAOI 直接竞争对手',          l:3, x:420, u:false},
+      {id:'MRVL', co:'Marvell Technology',          desc:'定制云 ASIC\n+ 光学 DSP 芯片\n→ AMZN/MSFT 定制芯片',       l:3, x:640, u:false},
+      {id:'ANET', co:'Arista Networks',             desc:'以太网交换机\nAI/ML 集群组网\n→ 超大规模云首选',             l:3, x:870, u:false},
+      {id:'SMCI', co:'Super Micro Computer',        desc:'GPU 优化服务器系统\n液冷机架解决方案\n→ AI 云主要硬件来源',   l:4, x:10,  u:false},
+      {id:'P',    co:'Everpure（原 Pure Storage）',  desc:'AI 训练管线全闪存\n存储平台\nFlashBlade//EXA + STaaS',      l:4, x:220, u:true },
+      {id:'VRT',  co:'Vertiv Holdings',             desc:'电源分配与\n液冷系统\n→ AI 数据中心必备基础设施',            l:4, x:430, u:false},
+      {id:'AMZN', co:'Amazon / AWS',                desc:'AWS 云 + Trainium2\n& Inferentia2 定制 ASIC\n→ 全球最大云服务商', l:5, x:10,  u:true },
+      {id:'NBIS', co:'Nebius Group',                desc:'AI 原生 GPU 云\n专为机器学习构建\n→ 前 Yandex，快速增长',    l:5, x:230, u:true },
+      {id:'HUT',  co:'Hut 8',                       desc:'GPU 云 + HPC 基础设施\n& 比特币挖矿\n→ 算力基础设施转型',    l:5, x:450, u:true },
+      {id:'IREN', co:'Iris Energy',                 desc:'AI 云 GPU 集群\n+ 绿色能源 HPC\n→ 可再生能源驱动数据中心',   l:5, x:655, u:true },
+      {id:'MSFT', co:'Microsoft Azure',             desc:'Azure AI + OpenAI\nMaia 2 定制 ASIC\n→ 第二大云，Copilot 套件', l:5, x:870, u:false},
+    ],
+    edges: [
+      {f:'KLAC',t:'INTC',s:7}, {f:'ONTO',t:'INTC',s:5}, {f:'AMAT',t:'INTC',s:8},
+      {f:'LRCX',t:'INTC',s:7}, {f:'ASML',t:'INTC',s:9},
+      {f:'CDNS',t:'NVDA',s:8}, {f:'SNPS',t:'NVDA',s:8},
+      {f:'CDNS',t:'AVGO',s:8}, {f:'SNPS',t:'AVGO',s:7},
+      {f:'CDNS',t:'AMD', s:8}, {f:'SNPS',t:'AMD', s:8},
+      {f:'RMBS',t:'NVDA',s:6}, {f:'RMBS',t:'AVGO',s:5}, {f:'RMBS',t:'AMD',s:6},
+      {f:'ARM', t:'NVDA',s:9}, {f:'ARM', t:'AVGO',s:7}, {f:'ARM', t:'MRVL',s:7},
+      {f:'ARM', t:'AMZN',s:8}, {f:'ARM', t:'MSFT',s:7},
+      {f:'INTC',t:'AMZN',s:7}, {f:'INTC',t:'MSFT',s:8},
+      {f:'MU',  t:'NVDA',s:9}, {f:'MU',  t:'AMD', s:8},
+      {f:'NVDA',t:'SMCI',s:10},
+      {f:'NVDA',t:'AMZN',s:9}, {f:'NVDA',t:'NBIS',s:10},
+      {f:'NVDA',t:'HUT', s:9}, {f:'NVDA',t:'IREN',s:9}, {f:'NVDA',t:'MSFT',s:9},
+      {f:'INTC',t:'SMCI',s:7},
+      {f:'AVGO',t:'AMZN',s:8}, {f:'AVGO',t:'MSFT',s:7}, {f:'AVGO',t:'NBIS',s:6},
+      {f:'AMD', t:'AMZN',s:8}, {f:'AMD', t:'MSFT',s:7}, {f:'AMD', t:'SMCI',s:7},
+      {f:'AMD', t:'IREN',s:6},
+      {f:'MCHP',t:'SMCI',s:6}, {f:'SIMO',t:'SMCI',s:7}, {f:'MU', t:'SMCI',s:6},
+      {f:'AAOI',t:'AMZN',s:9}, {f:'AAOI',t:'MSFT',s:5},
+      {f:'AAOI',t:'NOK', s:6}, {f:'AAOI',t:'ANET',s:7},
+      {f:'COHR',t:'AMZN',s:8}, {f:'COHR',t:'MSFT',s:8},
+      {f:'COHR',t:'NOK', s:7}, {f:'COHR',t:'ANET',s:8},
+      {f:'MRVL',t:'AMZN',s:9}, {f:'MRVL',t:'MSFT',s:8}, {f:'MRVL',t:'NBIS',s:6},
+      {f:'ANET',t:'AMZN',s:9}, {f:'ANET',t:'MSFT',s:9},
+      {f:'ANET',t:'NBIS',s:8}, {f:'ANET',t:'HUT', s:7}, {f:'ANET',t:'IREN',s:7},
+      {f:'NOK', t:'AMZN',s:6}, {f:'NOK', t:'MSFT',s:5},
+      {f:'SMCI',t:'NBIS',s:9}, {f:'SMCI',t:'HUT',s:8}, {f:'SMCI',t:'IREN',s:8},
+      {f:'P',   t:'AMZN',s:7}, {f:'P',   t:'MSFT',s:8},
+      {f:'P',   t:'NBIS',s:8}, {f:'P',   t:'HUT', s:6}, {f:'P',   t:'IREN',s:6},
+      {f:'VRT', t:'AMZN',s:8}, {f:'VRT', t:'MSFT',s:6},
+      {f:'VRT', t:'NBIS',s:7}, {f:'VRT', t:'HUT', s:8}, {f:'VRT', t:'IREN',s:8},
+    ],
+    info: {
+      KLAC: { summary: 'KLA Corporation 是全球最大的半导体晶圆检测设备公司，全球市占率约 50%。提供晶圆缺陷检测、关键尺寸量测和数据分析系统，在先进制程（3nm/2nm）的良品率管控中不可或缺。AI 算力军备竞赛推动台积电、三星、英特尔等晶圆厂大幅扩产，KLA 设备订单能见度超两年。每一条新产线的落成，KLA 都是最先受益的供应商之一。' },
+      ONTO: { summary: 'Onto Innovation 是半导体光学量测与过程控制系统供应商，专注于薄膜厚度测量、光学关键尺寸（OCD）量测与图案化缺陷检测。主要客户为英特尔、台积电、三星。市值较小（约 20 亿美元），属于 KLA 的补充替代标的，受益于相同的晶圆厂扩产逻辑但弹性更大。' },
+      AMAT: { summary: 'Applied Materials 是全球最大半导体设备公司（按营收），提供 CVD/PVD 薄膜沉积、干法/湿法刻蚀、离子注入等几乎覆盖芯片制造全流程的设备。AI 算力扩张是最大增长驱动，同时拥有半导体服务（AGS）业务提供稳定收入。AI 数据中心建设的每一颗芯片，都需要 AMAT 的设备来制造。' },
+      LRCX: { summary: 'Lam Research 是全球领先的刻蚀与薄膜沉积设备公司，3D NAND 存储刻蚀设备市占率极高。在先进逻辑芯片（AI GPU、CPU）的干法刻蚀工艺中是核心供应商，3nm/2nm 制程对 Lam 设备依赖极深。HBM 内存（AI GPU 必需）产能扩张也是其重要催化剂。' },
+      ASML: { summary: 'ASML 是全球唯一 EUV（极紫外光刻）设备制造商，技术垄断地位无可替代，是整个半导体产业链最大的单点瓶颈。每台 High-NA EUV 售价超 3.5 亿欧元，台积电、三星、英特尔均高度依赖。AI 算力大战使其订单能见度超过两年，出口管制也赋予其地缘政治博弈筹码，长期护城河无可撼动。' },
+      CDNS: { summary: 'Cadence Design Systems 是全球最大 EDA（电子设计自动化）软件公司之一。NVIDIA、Broadcom 等所有先进芯片的电路设计、仿真、物理布局均使用 Cadence 工具完成，属于每颗芯片诞生的"基础软件层"。近年拓展 AI 加速仿真（Cadence AI）和系统级设计，客户黏性极高，收入以年费订阅为主，利润率稳定。' },
+      SNPS: { summary: 'Synopsys 是全球 EDA 双龙头之一，提供综合、物理实现、DFT 测试、形式验证等关键工具链，收购 Ansys 后延伸至多物理场仿真。其硅 IP（接口 IP、嵌入式处理器 IP）被广泛授权给芯片设计公司使用。AI 芯片设计复杂度指数级上升，直接驱动 EDA 软件需求和 ASP 提升。' },
+      RMBS: { summary: 'Rambus 是专注于内存接口 IP 授权的半导体 IP 公司。其 HBM（高带宽内存）控制器和 PHY 接口 IP 被 NVIDIA、AMD 等 GPU 厂商广泛授权使用，每颗搭载 HBM 的 AI GPU 都需向 Rambus 缴纳版税。商业模式以"躺收版税"为主，利润率高达 30%+，是 AI 算力扩张的"收税者"标的，但成长天花板相对有限。' },
+      INTC: { summary: 'Intel 是全球最大 x86 CPU 制造商，也是唯一同时具备芯片设计和先进制造能力的美国公司（IDM 模式）。Gaudi 3 AI 加速器正面挑战 NVIDIA；Intel Foundry Services（IFS）争夺台积电外包客户。目前处于战略转型阵痛期，18A 制程被视为关键翻盘节点。' },
+      ARM:  { summary: 'Arm Holdings 是全球最重要的 CPU 架构 IP 授权公司，旗下 ARM 指令集架构（ISA）是全球 99% 移动芯片和越来越多数据中心芯片的设计基础。NVIDIA Grace CPU 使用 72 颗 ARM Neoverse V2 核心；亚马逊 Graviton、微软 Cobalt、苹果 M 系列、高通骁龙均基于 ARM 授权。商业模式为"躺收版税"。' },
+      NVDA: { summary: 'NVIDIA 是 AI 时代最核心的基础设施公司，主导全球 AI 训练市场（市占率超 80%）。H100/H200/B200/GB200 GPU 是当前 AI 大模型训练的事实标准，CUDA 生态形成极深的软件护城河。Grace CPU（基于 ARM）+ Hopper GPU 组合是 GB200 的核心。2025 年营收预计超 1500 亿美元。' },
+      AVGO: { summary: 'Broadcom 是 AI 基础设施双主线受益者：① 网络交换 ASIC（Tomahawk 系列）全球市占率超 80%；② 为谷歌（TPU）、Meta（MTIA）、苹果定制 AI 芯片（XPU），定制 ASIC 业务 2025 年营收预计超 200 亿美元并快速增长。AVGO 是唯一能在规模上与 NVDA 形成补充/竞争的公司。' },
+      MCHP: { summary: 'Microchip Technology 是全球最大 MCU（微控制器）供应商之一，同时生产 FPGA、时钟/同步 IC、PCIe 重定时器、以太网控制器。在数据中心中负责电源序列管理、PCIe 信号完整性和时序同步，是服务器主板的"水暖工"。' },
+      QUIK: { summary: 'QuickLogic 是小市值 eFPGA（嵌入式可编程门阵列）IP 供应商，专注于传感器集线器和边缘 AI 处理。市值极小（约 1 亿美元），流动性有限，属于边缘 AI 领域的高风险高弹性标的。' },
+      SIMO: { summary: 'Silicon Motion Technology 是全球领先的 NAND 闪存控制器芯片公司。其控制器固件 IP 被三星、SK Hynix、美光等存储厂广泛采用。AI 数据中心对存储的读写性能要求极高，推动 PCIe Gen5 NVMe SSD 需求爆发。' },
+      MU:   { summary: 'Micron Technology 是全球三大存储芯片公司之一。其 HBM3E 高带宽内存直接封装进 NVIDIA B200 GPU（每颗 GPU 含 192GB HBM3E），是 AI 算力最直接的基础元件之一。HBM 价格自 2024 年暴涨超 600%。' },
+      AMD:  { summary: 'Advanced Micro Devices 是 NVIDIA 在 AI 算力领域最直接的挑战者。MI300X GPU 在 AI 推理性能上与 H100 旗鼓相当；EPYC CPU 在数据中心服务器市占率持续蚕食英特尔份额。AWS、微软 Azure、Meta 均已采购 MI300X 作为 NVDA 的补充/替代。' },
+      AAOI: { summary: 'Applied Optoelectronics 是光学收发器及激光二极管模块制造商，主要产品为 100G/400G/800G 数据中心光模块。AWS 持有 AAOI 认股权证 + 长期 800G 供应合同（数十亿美元），是其最大客户。AI 建设潮推动 800G 光模块需求急速增长。' },
+      NOK:  { summary: 'Nokia 是全球电信设备与光网络基础设施巨头，IP 路由器和光传输设备广泛部署于数据中心互联及骨干网络。AI 带动数据流量爆炸式增长是其中期催化剂。' },
+      COHR: { summary: 'Coherent Corp（前身 II-VI）是全球最大光学元器件及模块公司之一。800G/1.6T 超高速光模块是其核心增长业务，AWS 和 Azure 是主要客户，受益于 AI 数据中心建设潮。' },
+      MRVL: { summary: 'Marvell Technology 为超大规模云厂商定制 AI ASIC 及光学 DSP 芯片，已获得亚马逊 Trainium、微软 Maia 等大型定制芯片合同。NVIDIA 2026 年战略投资 20 亿美元，深化 NVLink Fusion 合作。' },
+      ANET: { summary: 'Arista Networks 是全球超大规模云数据中心首选以太网交换机品牌，亚马逊 AWS 和微软 Azure 是其最大客户，合计贡献营收约 40%。AI GPU 集群对网络带宽要求极高，推动 400G/800G 交换机超周期需求。' },
+      SMCI: { summary: 'Super Micro Computer 是 GPU 服务器整机设计与制造商，专注于液冷服务器系统和高密度机架解决方案。是 NVIDIA GB200 最大整机集成商（25% Blackwell 供货份额），$13B GB300 系统订单。' },
+      P:    { summary: 'Everpure（NYSE: P，原 Pure Storage / PSTG，2026 年 2 月更名）是企业级全闪存存储平台公司。FlashBlade//EXA 为 AI 训练提供极高吞吐的共享存储，已成为 Azure Native 服务。' },
+      VRT:  { summary: 'Vertiv Holdings 是关键数据中心基础设施提供商，专注于电源（UPS、PDU）和热管理（液冷、风冷）系统。AI GPU 单颗功耗高达 1000W 以上，液冷成为刚需。' },
+      AMZN: { summary: 'Amazon Web Services（AWS）是全球最大云服务商（市占率约 31%）。AWS 自研 Trainium2 和 Inferentia2 AI 芯片，战略目的是减少对 NVIDIA 的依赖并降低算力成本。2026 年资本支出预计超 1000 亿美元。' },
+      NBIS: { summary: 'Nebius Group 是前 Yandex N.V. 旗下 AI 基础设施云公司，2024 年剥离俄罗斯资产后重组上市。定位为 AI 原生 GPU 云。NVIDIA 直接战略投资，Everpure 和 Arista 是其核心硬件供应商。' },
+      HUT:  { summary: 'Hut 8 是加拿大数字基础设施公司，正从比特币挖矿转型为高性能计算（HPC）与 AI GPU 云。持有大量自有电力合同和数据中心资产。' },
+      IREN: { summary: 'Iris Energy 专注于可再生能源驱动的 AI 云 GPU 集群，同时经营比特币挖矿业务。自建数据中心使用水电/太阳能，单位电力成本极低（约 3 美分/度）。' },
+      MSFT: { summary: 'Microsoft Azure 是全球第二大云服务商，通过对 OpenAI 的独家合作掌握最领先 AI 模型访问权。自研 Maia 2 AI 加速芯片战略性减少 NVIDIA 依赖。2026 年资本支出超 1000 亿美元。' },
+    },
+  },
+
+  robot: {
+    title: '机器人产业链 — 从精密零部件到终端部署',
+    subtitle: '最上游（顶部）→ 机器人终端客户（底部） · 2026 · <strong>Hover</strong> 查看关联，<strong>点击</strong>查看业务详情',
+    layerNames: ['精密机械零部件','半导体与控制芯片','传感器与视觉','运动控制与自动化','机器人厂商','终端客户/部署方'],
+    width: 1320,
+    nodes: [
+      // L0 精密机械零部件
+      {id:'RRX',  co:'Regal Rexnord',                desc:'精密齿轮箱 + 伺服\n→ 全球第二大供应商\n→ 人形机器人关节核心',  l:0, x:10,  u:true },
+      {id:'TKR',  co:'Timken',                       desc:'精密轴承制造\n→ 工业/手术机器人\n关节运动核心元件',          l:0, x:200, u:true },
+      {id:'AME',  co:'Ametek',                       desc:'精密运动控制\n+ 工业仪器\n→ 手术机器人重要供应商',         l:0, x:390, u:false},
+      // L1 半导体与控制芯片
+      {id:'NVDA', co:'NVIDIA',                       desc:'Jetson Thor + GR00T\n人形机器人 AI 大脑\n+ Isaac 仿真平台',  l:1, x:10,  u:true },
+      {id:'QCOM', co:'Qualcomm',                     desc:'Dragonwing IQ10\n机器人 AI 处理器\n→ Figure/KUKA 合作',     l:1, x:200, u:true },
+      {id:'TXN',  co:'Texas Instruments',            desc:'电机驱动 IC + 信号链\n→ 机器人「神经肌肉」\n   每个关节都需要',l:1, x:390, u:true },
+      {id:'ADI',  co:'Analog Devices',               desc:'工业级 IMU + MEMS\n→ 平衡控制核心\n   人形机器人姿态感知',     l:1, x:580, u:true },
+      {id:'INTC', co:'Intel',                        desc:'Core Ultra + 边缘 AI\nRobotics AI Suite\n→ 200+ OEM 合作',  l:1, x:770, u:false},
+      // L2 传感器与视觉
+      {id:'CGNX', co:'Cognex',                       desc:'工业机器视觉龙头\n→ 全球市占率 50%+\n仓储/手术/分拣引导',     l:2, x:10,  u:true },
+      {id:'OUST', co:'Ouster',                       desc:'数字 LiDAR 龙头\n（合并 Velodyne）\n→ 仓储 + AMR 导航',     l:2, x:200, u:true },
+      {id:'AEVA', co:'Aeva',                         desc:'FMCW LiDAR\n下一代技术方向\n直接测速 + 抗光干扰',           l:2, x:390, u:true },
+      {id:'TDY',  co:'Teledyne Technologies',        desc:'热成像 + 工业相机\n（拥有 FLIR）\n→ 无人机 + 手术导航',     l:2, x:580, u:false},
+      // L3 运动控制与自动化
+      {id:'ROK',  co:'Rockwell Automation',          desc:'工业自动化龙头\nFactoryTalk + OTTO\n→ 全球 50% 工厂',       l:3, x:10,  u:true },
+      {id:'EMR',  co:'Emerson Electric',             desc:'自动化 + 流程控制\n→ 制造业回流受益\n机器人化工厂建设',         l:3, x:200, u:false},
+      {id:'ABB',  co:'ABB Ltd',                      desc:'工业机器人四大家族\n→ 协作机器人前三\n伺服+驱动+集成全套',     l:3, x:390, u:true },
+      // L4 机器人厂商
+      {id:'TER',  co:'Teradyne',                     desc:'半导体测试 + UR 协作\nUniversal Robots + MiR\n→ 协作机器人 35% 份额',l:4, x:10,  u:true },
+      {id:'SYM',  co:'Symbotic',                     desc:'仓储自动化机器人\n→ Walmart 战略合作\n在手订单 227 亿美元',   l:4, x:200, u:true },
+      {id:'ISRG', co:'Intuitive Surgical',           desc:'da Vinci 手术机器人\n→ 全球市占率 60%+\nIon 支气管平台',     l:4, x:390, u:true },
+      {id:'MDT',  co:'Medtronic',                    desc:'Hugo RAS 手术机器人\n→ 挑战 da Vinci\n医疗器械全球巨头',     l:4, x:580, u:true },
+      {id:'SYK',  co:'Stryker',                      desc:'Mako 骨科机器人\n→ 膝/髋关节置换标杆\n骨科机器人渗透率提升',  l:4, x:770, u:true },
+      {id:'TSLA', co:'Tesla',                        desc:'Optimus 人形机器人\n2026 Q2 量产爬坡\n+ Dojo 训练超算',     l:4, x:960, u:true },
+      {id:'AVAV', co:'AeroVironment',                desc:'Switchblade + Puma\n→ 全球小型无人机龙头\n机器人化战争核心',    l:4, x:1150,u:true },
+      // L5 终端客户/部署方
+      {id:'AMZN', co:'Amazon',                       desc:'Amazon Robotics (Kiva)\n→ 全球最大仓储机器人\n80 亿件年自动化',l:5, x:10,  u:true },
+      {id:'WMT',  co:'Walmart',                      desc:'Symbotic 战略股东\n→ 50+ 配送中心\nSYM 仓储机器人部署',      l:5, x:200, u:true },
+    ],
+    edges: [
+      // L0 → L4 (precision parts → robot makers)
+      {f:'RRX', t:'TER', s:8}, {f:'RRX', t:'ISRG',s:7}, {f:'RRX', t:'MDT',s:6},
+      {f:'RRX', t:'SYK', s:6}, {f:'RRX', t:'TSLA',s:8}, {f:'RRX', t:'SYM',s:6},
+      {f:'TKR', t:'TER', s:6}, {f:'TKR', t:'ISRG',s:6}, {f:'TKR', t:'TSLA',s:7},
+      {f:'AME', t:'ISRG',s:7}, {f:'AME', t:'MDT', s:6}, {f:'AME', t:'SYK', s:5},
+      // L1 → L4 (semis → robot makers)
+      {f:'NVDA',t:'TER', s:8}, {f:'NVDA',t:'SYM', s:8}, {f:'NVDA',t:'ISRG',s:7},
+      {f:'NVDA',t:'MDT', s:6}, {f:'NVDA',t:'TSLA',s:9}, {f:'NVDA',t:'AVAV',s:7},
+      {f:'QCOM',t:'TER', s:7}, {f:'QCOM',t:'TSLA',s:5}, {f:'QCOM',t:'SYM',s:5},
+      {f:'TXN', t:'TER', s:8}, {f:'TXN', t:'SYM', s:7}, {f:'TXN', t:'ISRG',s:8},
+      {f:'TXN', t:'MDT', s:7}, {f:'TXN', t:'SYK', s:7}, {f:'TXN', t:'TSLA',s:9},
+      {f:'TXN', t:'AVAV',s:6},
+      {f:'ADI', t:'TER', s:7}, {f:'ADI', t:'SYM', s:7}, {f:'ADI', t:'ISRG',s:7},
+      {f:'ADI', t:'MDT', s:6}, {f:'ADI', t:'TSLA',s:9}, {f:'ADI', t:'AVAV',s:8},
+      {f:'INTC',t:'TER', s:6}, {f:'INTC',t:'ISRG',s:5},
+      // L2 → L4 (sensors → robot makers)
+      {f:'CGNX',t:'TER', s:8}, {f:'CGNX',t:'SYM', s:9}, {f:'CGNX',t:'ISRG',s:8},
+      {f:'CGNX',t:'MDT', s:7}, {f:'CGNX',t:'SYK', s:6}, {f:'CGNX',t:'TSLA',s:5},
+      {f:'OUST',t:'SYM', s:8}, {f:'OUST',t:'AVAV',s:6}, {f:'OUST',t:'TER', s:5},
+      {f:'AEVA',t:'AVAV',s:5}, {f:'AEVA',t:'MDT', s:4},
+      {f:'TDY', t:'AVAV',s:8}, {f:'TDY', t:'ISRG',s:5}, {f:'TDY', t:'MDT', s:5},
+      // L3 → L4 / L5
+      {f:'ROK', t:'TER', s:6}, {f:'ROK', t:'SYM', s:7}, {f:'ROK', t:'TSLA',s:6},
+      {f:'ROK', t:'AMZN',s:8}, {f:'ROK', t:'WMT', s:6},
+      {f:'EMR', t:'SYM', s:6}, {f:'EMR', t:'TSLA',s:5}, {f:'EMR', t:'AMZN',s:6},
+      {f:'ABB', t:'TSLA',s:5}, {f:'ABB', t:'AMZN',s:4},
+      // L4 → L5 (robot makers → end customers)
+      {f:'TER', t:'AMZN',s:7}, {f:'TER', t:'WMT', s:5},
+      {f:'SYM', t:'WMT', s:10}, {f:'SYM', t:'AMZN',s:5},
+    ],
+    info: {
+      RRX:  { summary: 'Regal Rexnord 是全球第二大精密齿轮箱制造商（仅次于日本 Nabtesco），旗下 Kollmorgen 伺服电机 + Thomson 直线运动 + 精密减速器组成完整机器人关节解决方案。人形机器人单台需要 28-40 个精密减速器，RRX 是少数能批量供应的美国本土厂商。2026 年 Tesla Optimus、Figure 等人形机器人量产爬坡将直接驱动 RRX 关节业务高速增长，是机器人产业链中美股最纯粹的精密机械标的。' },
+      TKR:  { summary: 'Timken 是全球领先的精密轴承制造商，应用涵盖工业机器人关节、surgical robots、卫星陀螺仪、风电主轴等。机器人关节中的高精度轴承需求随人形机器人量产将快速增长，TKR 在小尺寸高精度轴承领域有明显优势。也受益于机器人之外的工业自动化、航空航天大潮，业务相对稳健，估值合理。' },
+      AME:  { summary: 'Ametek 是高度多元化的精密仪器与电气机电公司，旗下包括精密运动控制、热成像、电源管理等业务。其精密运动控制部门为 surgical robots、半导体设备和工业自动化提供关键组件。Ametek 通过持续并购扩张机器人相关业务，是低调但稳健的精密机电平台型公司，长期复合增长率优秀。' },
+      NVDA: { summary: 'NVIDIA 在 AI 算力基础设施已是龙头，在机器人领域同样布局深远。Jetson Thor 平台为人形机器人提供 AI 大脑，Isaac 机器人开发平台是行业事实标准。GR00T 通用人形机器人基础模型与全球主要人形机器人厂商（Figure、Apptronik、1X 等）合作。机器人业务 2026 Q2 营收 5.86 亿美元，是 NVIDIA 内部增速最快的板块之一，是 AI + 机器人双线龙头。' },
+      QCOM: { summary: 'Qualcomm 2026 年 CES 推出 Dragonwing 机器人芯片系列，专为人形机器人和 AMR 设计。IQ10 系列集成实时电机控制 + AI 推理，与 Figure、KUKA、VinMotion 等多家人形/工业机器人厂商达成设计合作。Qualcomm 凭借其在移动端低功耗 AI 处理器的积累，是 NVIDIA 在机器人 AI 处理器领域最强劲的挑战者。' },
+      TXN:  { summary: 'Texas Instruments 是全球最大模拟芯片公司，机器人的"神经与肌肉"系统：电机驱动 IC、传感器接口、电源管理、嵌入式 MCU。每个机器人关节都需 TXN 的电机驱动芯片（DRV 系列），人形机器人 28-40 个关节大幅放大 TI 单机价值量。是机器人量产化中最直接的"卖铲人"标的，业务覆盖工业、汽车、医疗、消费各类机器人。' },
+      ADI:  { summary: 'Analog Devices 在 MEMS 惯性测量单元（IMU）领域全球领先，ADIS16 系列是工业级 IMU 标杆产品，被广泛用于人形机器人平衡控制、surgical robots 精确定位、drone 飞行姿态感知。机器人量产对高精度 IMU 需求快速增长，ADI 单机价值量提升明显。同时还提供电机控制、信号链等机器人核心模拟芯片。' },
+      INTC: { summary: 'Intel 在机器人领域以边缘 AI + 实时控制双线布局。Core Ultra Series 3 + 即将发布的 Panther Lake 提供高性能边缘 AI 推理；Robotics AI Suite 集成 ROS 2 + OpenVINO 等开源工具链。已与 200+ 全球机器人 OEM 合作。在工厂自动化和 surgical robots 等需要 x86 兼容性的场景仍是首选。' },
+      CGNX: { summary: 'Cognex 是全球工业机器视觉龙头，市占率超 50%。In-Sight 6900（NVIDIA 驱动）、In-Sight 3900（QCOM 驱动）AI 视觉相机被广泛部署于 pick-and-place、surgical robots 引导、warehouse robots 物品识别。Q1 2026 营收同比 +24%，是机器人视觉感知最纯粹的投资标的，也是机器人量产化最直接的设备类受益者。' },
+      OUST: { summary: 'Ouster 是数字 LiDAR 龙头（2023 年与 Velodyne 合并后）。其 OS 系列 LiDAR 被广泛用于 Symbotic 仓储机器人、SERV 自动配送、AMR 自主导航等。LiDAR 在工业机器人导航、warehouse robots 避障中是关键传感器，OUST 受益于机器人导航需求的快速增长。' },
+      AEVA: { summary: 'Aeva 提供 FMCW LiDAR 技术，相比传统 ToF LiDAR 可以直接测量速度（多普勒效应），且不易受太阳光干扰，是下一代 LiDAR 技术方向。已有 Daimler、SK Telecom 等战略合作。FMCW 在 surgical robots、自主车辆等精度敏感场景具有差异化优势，但目前商业化进度较慢，属于高弹性早期标的。' },
+      TDY:  { summary: 'Teledyne Technologies 是全球热成像和工业成像龙头（2021 年收购 FLIR），产品覆盖热成像相机、工业相机、医疗影像传感器。在 drones（无人机）、surgical robots 红外引导、工业检测中有广泛应用。多元化业务结构使其在机器人之外还受益于国防、航天等领域增长。' },
+      ROK:  { summary: 'Rockwell Automation 是全球工业自动化龙头，FactoryTalk 软件控制全球 50%+ 工厂。收购 Clearpath 后获得 OTTO 移动机器人能力，正与 ABB 等合作集成 cobot。机器人化工厂转型直接利好 ROK 的 PLC、伺服驱动、运动控制等核心业务。是制造业回流和机器人化升级最直接的美股标的。' },
+      EMR:  { summary: 'Emerson Electric 是全球工业自动化与过程控制龙头，业务涵盖工厂自动化、流程工业控制、电机驱动等。受益于美国制造业回流和工厂自动化升级的大趋势，机器人化工厂建设直接拉动 Emerson 的控制系统与电机产品销售。' },
+      ABB:  { summary: 'ABB 是全球工业机器人四大家族之一（瑞士企业，纽约 ADR）。ABB Robotics 在工业机器人和协作机器人领域市占率全球前三，同时拥有伺服电机、驱动器、自动化系统全套产品。在美国制造业回流和电动化生产线大规模部署中是重要受益者。' },
+      TER:  { summary: 'Teradyne 是半导体测试设备龙头，同时拥有 Universal Robots（全球协作机器人龙头，市占率超 35%）和 MiR（移动机器人）。2026 年新设密歇根机器人制造中心，加强美国本土生产。协作机器人在制造业回流、中小企业自动化中需求快速增长，UR + MiR 是 Teradyne 第二增长曲线。' },
+      SYM:  { summary: 'Symbotic 是仓储自动化机器人龙头，已与 Walmart 达成 5.2 亿美元投资 + 收购 ASR 业务的战略协议，是 Walmart 仓储机器人化的独家合作伙伴。Q2 2026 在手订单 227 亿美元，业绩能见度极高。机器人每小时处理货物量是人工的 10 倍，是仓储革命中最纯粹的投资标的。' },
+      ISRG: { summary: 'Intuitive Surgical 是手术机器人绝对龙头，市值 1740 亿美元，da Vinci 系统全球手术机器人市占率超 60%。Ion 平台拓展支气管介入治疗。Q1 2026 手术量同比 +17%。新一代 da Vinci 5 已上市，技术领先竞争对手 Medtronic Hugo 1-2 个代际，是医疗机器人最稳健的长期复利标的。' },
+      MDT:  { summary: 'Medtronic 是全球医疗器械巨头，Hugo RAS 手术机器人是 ISRG da Vinci 最大挑战者。2025-2026 在欧美陆续获批，正在快速布局市场。虽然技术上落后 ISRG 1-2 个代际，但 Medtronic 的渠道、品牌和医院关系优势可帮助 Hugo 突破，是手术机器人第二梯队的代表。' },
+      SYK:  { summary: 'Stryker 是骨科医疗器械龙头，Mako 机器人在膝关节/髋关节置换术市场是事实标准，渗透率持续提升。骨科手术机器人的 ROI 已被广泛验证（缩短住院时间、降低并发症），医院采购意愿强劲，Mako 是 Stryker 高质量复合增长的核心引擎之一。' },
+      TSLA: { summary: 'Tesla 是全球电动车龙头，但更核心的看点是 Optimus 人形机器人。预计 2026 Q2 启动量产，2026 全年目标 5-10 万台。Optimus 整合 Tesla 在视觉感知（Dojo 训练）、电池、电机、自动驾驶上的全栈能力。如果量产成功，Tesla 将从汽车公司升级为通用机器人平台公司，估值逻辑彻底重塑，是机器人时代最具想象空间的标的。' },
+      AVAV: { summary: 'AeroVironment 是全球小型无人机龙头，Switchblade、Puma 等已在乌克兰战场大规模使用。机器人化战争（包括无人机蜂群、地面机器人）使其订单能见度极高。从纯防务向机器人系统供应商转型，是国防 + 机器人双重叙事的标的。' },
+      AMZN: { summary: 'Amazon 是全球最大仓储机器人部署方（Amazon Robotics 即原 Kiva）。Orbital 等新一代机器人 2025 年已自动化处理 80 亿件商品。AWS 同时是机器人 AI 模型训练的算力基础设施。Amazon 既是机器人技术买方，又是仓储机器人技术输出方，机器人化是其降本增效的核心战略。' },
+      WMT:  { summary: 'Walmart 是 Symbotic 的最大客户和战略股东（5.2 亿美元投资），50+ 配送中心正在大规模部署 SYM 仓储机器人。Walmart 的仓储自动化转型是美国零售业最大规模的机器人化项目，仓储机器人渗透率快速提升直接受益。' },
+    },
+  },
+
+};
 
 // ── Settings ──────────────────────────────────────────────────────────────────
-const LS_FH = 'ai_chain_finnhub_key';
+const LS_FH    = 'ai_chain_finnhub_key';
+const LS_CHART = 'ai_chain_current_chart';
 const getFhKey = () => localStorage.getItem(LS_FH) || '';
 const setFhKey = (v) => localStorage.setItem(LS_FH, v.trim());
 
@@ -469,265 +724,22 @@ document.getElementById('settings-overlay').addEventListener('click', (e) => {
     document.getElementById('settings-overlay').classList.remove('open');
 });
 
-// ── Data ──────────────────────────────────────────────────────────────────────
-const nodes = [
-  {id:'KLAC', co:'KLA Corporation',            desc:'晶圆缺陷检测\n与量测工具\n→ 制程良率管控核心',              l:0, x:10,  u:true },
-  {id:'ONTO', co:'Onto Innovation',             desc:'光学量测与\n过程控制系统\n→ 薄膜厚度精密测量',              l:0, x:200, u:true },
-  {id:'AMAT', co:'Applied Materials',           desc:'CVD/PVD 薄膜沉积\n+ 刻蚀 + 离子注入\n→ 最大半导体设备商',   l:0, x:390, u:false},
-  {id:'LRCX', co:'Lam Research',                desc:'刻蚀与沉积\n工艺设备\n→ 3nm/2nm 工艺不可缺',              l:0, x:580, u:false},
-  {id:'ASML', co:'ASML',                        desc:'EUV 光刻机\n→ 全球唯一供应商\n→ 最大供应瓶颈',             l:0, x:770, u:false},
-  {id:'CDNS', co:'Cadence Design Systems',      desc:'EDA 软件与硅 IP\n→ 每颗芯片设计\n   都用 Cadence 工具',     l:1, x:10,  u:false},
-  {id:'SNPS', co:'Synopsys',                    desc:'EDA + 验证工具\n与安全 IP\n→ 芯片综合/物理实现',            l:1, x:210, u:false},
-  {id:'RMBS', co:'Rambus',                      desc:'HBM 内存接口\nIP 授权\n→ 向 NVDA/AMD 收版税',             l:1, x:470, u:true },
-  {id:'INTC', co:'Intel',                       desc:'x86 CPU + Gaudi 3 AI GPU\n+ 英特尔代工 (IFS)\n→ IDM：自设计自制造', l:1, x:730, u:true },
-  {id:'ARM',  co:'Arm Holdings',               desc:'CPU 架构 IP 授权\n→ 云/移动/边缘芯片\n   均建立在 ARM ISA 上', l:1, x:920, u:true },
-  {id:'NVDA', co:'NVIDIA',                      desc:'GPU H100/B200/GB200\nCUDA 生态系统\n+ InfiniBand 网络',     l:2, x:10,  u:true },
-  {id:'AVGO', co:'Broadcom',                    desc:'交换机 ASIC（Tomahawk）\n为谷歌/Meta/苹果\n定制 AI XPU',    l:2, x:200, u:true },
-  {id:'MCHP', co:'Microchip Technology',        desc:'MCU + FPGA + 时钟 IC\n数据中心电源管理\n& PCIe 控制',       l:2, x:390, u:true },
-  {id:'QUIK', co:'QuickLogic',                  desc:'eFPGA + 传感器集线器 IP\n边缘 AI / IoT 处理\n→ 小市值细分',  l:2, x:570, u:true },
-  {id:'SIMO', co:'Silicon Motion Technology',   desc:'NAND 闪存控制器\n& SSD 固件 IP\n→ 企业级/数据中心存储',     l:2, x:750, u:true },
-  {id:'MU',   co:'Micron Technology',           desc:'HBM3E 内存芯片\nDRAM + NAND 闪存\n→ 封装在每颗 NVDA GPU 内', l:2, x:950, u:false},
-  {id:'AMD',  co:'Advanced Micro Devices',      desc:'MI300X GPU + EPYC CPU\n→ NVDA 最直接竞争者\n   AI 训练/推理加速',  l:2, x:1140,u:true },
-  {id:'AAOI', co:'Applied Optoelectronics',     desc:'光学收发器\n& 激光二极管模块\n→ 100G/400G 数据中心',        l:3, x:10,  u:true },
-  {id:'NOK',  co:'Nokia',                       desc:'IP 路由 & 光传输\n网络设备\n→ 数据中心互联基础设施',         l:3, x:210, u:true },
-  {id:'COHR', co:'Coherent Corp',               desc:'800G 光学模块\n& 收发器芯片\n→ AAOI 直接竞争对手',          l:3, x:420, u:false},
-  {id:'MRVL', co:'Marvell Technology',          desc:'定制云 ASIC\n+ 光学 DSP 芯片\n→ AMZN/MSFT 定制芯片',       l:3, x:640, u:false},
-  {id:'ANET', co:'Arista Networks',             desc:'以太网交换机\nAI/ML 集群组网\n→ 超大规模云首选',             l:3, x:870, u:false},
-  {id:'SMCI', co:'Super Micro Computer',        desc:'GPU 优化服务器系统\n液冷机架解决方案\n→ AI 云主要硬件来源',   l:4, x:10,  u:false},
-  {id:'P',    co:'Everpure（原 Pure Storage）',  desc:'AI 训练管线全闪存\n存储平台\nFlashBlade//EXA + STaaS',      l:4, x:220, u:true },
-  {id:'VRT',  co:'Vertiv Holdings',             desc:'电源分配与\n液冷系统\n→ AI 数据中心必备基础设施',            l:4, x:430, u:false},
-  {id:'AMZN', co:'Amazon / AWS',                desc:'AWS 云 + Trainium2\n& Inferentia2 定制 ASIC\n→ 全球最大云服务商', l:5, x:10,  u:true },
-  {id:'NBIS', co:'Nebius Group',                desc:'AI 原生 GPU 云\n专为机器学习构建\n→ 前 Yandex，快速增长',    l:5, x:230, u:true },
-  {id:'HUT',  co:'Hut 8',                       desc:'GPU 云 + HPC 基础设施\n& 比特币挖矿\n→ 算力基础设施转型',    l:5, x:450, u:true },
-  {id:'IREN', co:'Iris Energy',                 desc:'AI 云 GPU 集群\n+ 绿色能源 HPC\n→ 可再生能源驱动数据中心',   l:5, x:655, u:true },
-  {id:'MSFT', co:'Microsoft Azure',             desc:'Azure AI + OpenAI\nMaia 2 定制 ASIC\n→ 第二大云，Copilot 套件', l:5, x:870, u:false},
-];
+// ── Shared state ──────────────────────────────────────────────────────────────
+let currentChart = 'ai';
+let nm = {};
+let adj = {};
+let svgPaths = [];
+let selectedId = null;
+let newsOpen = false, earningsOpen = false;
+const liveQuotes = {};  // shared across both charts
 
-const edges = [
-  // ── L0 Equipment → L1 Intel (only IDM in chart) ──────────────────────────
-  {f:'KLAC',t:'INTC',s:7}, {f:'ONTO',t:'INTC',s:5}, {f:'AMAT',t:'INTC',s:8},
-  {f:'LRCX',t:'INTC',s:7}, {f:'ASML',t:'INTC',s:9},
-
-  // ── L1 EDA tools → L2 chip designers ─────────────────────────────────────
-  {f:'CDNS',t:'NVDA',s:8}, {f:'SNPS',t:'NVDA',s:8},
-  {f:'CDNS',t:'AVGO',s:8}, {f:'SNPS',t:'AVGO',s:7},
-  {f:'CDNS',t:'AMD', s:8}, {f:'SNPS',t:'AMD', s:8},
-
-  // ── L1 IP licensing → L2 chip designers ──────────────────────────────────
-  // RMBS: HBM controller IP licensed to GPU/ASIC makers
-  {f:'RMBS',t:'NVDA',s:6}, {f:'RMBS',t:'AVGO',s:5}, {f:'RMBS',t:'AMD',s:6},
-  // ARM: CPU ISA licensed to chip designers
-  // NVDA Grace CPU (GH200/GB200) uses 72× ARM Neoverse V2 cores → score 9
-  {f:'ARM', t:'NVDA',s:9},
-  // Broadcom holds ARMv8 arch license for networking ASICs → score 7
-  {f:'ARM', t:'AVGO',s:7},
-  // Marvell ASIC platform explicitly uses ARM CPU subsystems → score 7
-  {f:'ARM', t:'MRVL',s:7},
-  // AWS Graviton (ARM-based), Azure Cobalt (ARM-based) → score 8/7
-  {f:'ARM', t:'AMZN',s:8}, {f:'ARM', t:'MSFT',s:7},
-  // INTC: Intel Xeon heavily adopted by AWS & Azure
-  {f:'INTC',t:'AMZN',s:7}, {f:'INTC',t:'MSFT',s:8},
-
-  // ── L2 Memory → L2 GPU (HBM stacked inside GPU packages) ─────────────────
-  {f:'MU',  t:'NVDA',s:9}, {f:'MU',  t:'AMD', s:8},
-
-  // ── L2 Compute → L4 Server / L5 Cloud ────────────────────────────────────
-  // NVDA: SMCI is NVIDIA's primary GB200 server integrator (25% Blackwell supply)
-  {f:'NVDA',t:'SMCI',s:10},
-  {f:'NVDA',t:'AMZN',s:9}, {f:'NVDA',t:'NBIS',s:10},
-  {f:'NVDA',t:'HUT', s:9}, {f:'NVDA',t:'IREN',s:9}, {f:'NVDA',t:'MSFT',s:9},
-  // INTC: IDM also feeds server platform
-  {f:'INTC',t:'SMCI',s:7},
-  // AVGO: Tomahawk switches + custom XPUs for hyperscalers
-  {f:'AVGO',t:'AMZN',s:8}, {f:'AVGO',t:'MSFT',s:7}, {f:'AVGO',t:'NBIS',s:6},
-  // AMD: EPYC CPUs + MI300X GPUs
-  {f:'AMD', t:'AMZN',s:8}, {f:'AMD', t:'MSFT',s:7}, {f:'AMD', t:'SMCI',s:7},
-  {f:'AMD', t:'IREN',s:6},  // IREN fleet includes AMD MI350X alongside NVDA
-  // L2 controllers → L4 servers
-  {f:'MCHP',t:'SMCI',s:6}, {f:'SIMO',t:'SMCI',s:7}, {f:'MU',  t:'SMCI',s:6},
-
-  // ── L3 Networking ─────────────────────────────────────────────────────────
-  // AAOI: AWS holds warrants, long-term 800G supply deal → score 9
-  {f:'AAOI',t:'AMZN',s:9}, {f:'AAOI',t:'MSFT',s:5},
-  {f:'AAOI',t:'NOK', s:6}, {f:'AAOI',t:'ANET',s:7},
-  // COHR: 800G ZR modules — AWS & Azure are top hyperscaler buyers
-  {f:'COHR',t:'AMZN',s:8}, {f:'COHR',t:'MSFT',s:8},
-  {f:'COHR',t:'NOK', s:7}, {f:'COHR',t:'ANET',s:8},
-  // MRVL: custom ASICs for Amazon Trainium, Azure Maia networking
-  {f:'MRVL',t:'AMZN',s:9}, {f:'MRVL',t:'MSFT',s:8},
-  {f:'MRVL',t:'NBIS',s:6},
-  // ANET: Ethernet switching for AI clusters
-  {f:'ANET',t:'AMZN',s:9}, {f:'ANET',t:'MSFT',s:9},
-  {f:'ANET',t:'NBIS',s:8}, {f:'ANET',t:'HUT', s:7}, {f:'ANET',t:'IREN',s:7},
-  // NOK: IP routing for hyperscaler backbone
-  {f:'NOK', t:'AMZN',s:6}, {f:'NOK', t:'MSFT',s:5},
-
-  // ── L4 Server Infra → L5 Cloud ────────────────────────────────────────────
-  {f:'SMCI',t:'NBIS',s:9}, {f:'SMCI',t:'HUT',s:8}, {f:'SMCI',t:'IREN',s:8},
-  // P (Everpure): Azure Native service + AWS + AI cloud providers
-  {f:'P',   t:'AMZN',s:7}, {f:'P',   t:'MSFT',s:8},
-  {f:'P',   t:'NBIS',s:8}, {f:'P',   t:'HUT', s:6}, {f:'P',   t:'IREN',s:6},
-  // VRT: power + liquid cooling for all major DCs
-  {f:'VRT', t:'AMZN',s:8}, {f:'VRT', t:'MSFT',s:6},
-  {f:'VRT', t:'NBIS',s:7}, {f:'VRT', t:'HUT', s:8}, {f:'VRT', t:'IREN',s:8},
-];
-
-const info = {
-  KLAC: { summary: 'KLA Corporation 是全球最大的半导体晶圆检测设备公司，全球市占率约 50%。提供晶圆缺陷检测、关键尺寸量测和数据分析系统，在先进制程（3nm/2nm）的良品率管控中不可或缺。AI 算力军备竞赛推动台积电、三星、英特尔等晶圆厂大幅扩产，KLA 设备订单能见度超两年。每一条新产线的落成，KLA 都是最先受益的供应商之一。' },
-  ONTO: { summary: 'Onto Innovation 是半导体光学量测与过程控制系统供应商，专注于薄膜厚度测量、光学关键尺寸（OCD）量测与图案化缺陷检测。主要客户为英特尔、台积电、三星。市值较小（约 20 亿美元），属于 KLA 的补充替代标的，受益于相同的晶圆厂扩产逻辑但弹性更大。' },
-  AMAT: { summary: 'Applied Materials 是全球最大半导体设备公司（按营收），提供 CVD/PVD 薄膜沉积、干法/湿法刻蚀、离子注入等几乎覆盖芯片制造全流程的设备。AI 算力扩张是最大增长驱动，同时拥有半导体服务（AGS）业务提供稳定收入。AI 数据中心建设的每一颗芯片，都需要 AMAT 的设备来制造。' },
-  LRCX: { summary: 'Lam Research 是全球领先的刻蚀与薄膜沉积设备公司，3D NAND 存储刻蚀设备市占率极高。在先进逻辑芯片（AI GPU、CPU）的干法刻蚀工艺中是核心供应商，3nm/2nm 制程对 Lam 设备依赖极深。HBM 内存（AI GPU 必需）产能扩张也是其重要催化剂。' },
-  ASML: { summary: 'ASML 是全球唯一 EUV（极紫外光刻）设备制造商，技术垄断地位无可替代，是整个半导体产业链最大的单点瓶颈。每台 High-NA EUV 售价超 3.5 亿欧元，台积电、三星、英特尔均高度依赖。AI 算力大战使其订单能见度超过两年，出口管制也赋予其地缘政治博弈筹码，长期护城河无可撼动。' },
-  CDNS: { summary: 'Cadence Design Systems 是全球最大 EDA（电子设计自动化）软件公司之一。NVIDIA、Broadcom 等所有先进芯片的电路设计、仿真、物理布局均使用 Cadence 工具完成，属于每颗芯片诞生的"基础软件层"。近年拓展 AI 加速仿真（Cadence AI）和系统级设计，客户黏性极高，收入以年费订阅为主，利润率稳定。' },
-  SNPS: { summary: 'Synopsys 是全球 EDA 双龙头之一，提供综合、物理实现、DFT 测试、形式验证等关键工具链，收购 Ansys 后延伸至多物理场仿真。其硅 IP（接口 IP、嵌入式处理器 IP）被广泛授权给芯片设计公司使用。AI 芯片设计复杂度指数级上升，直接驱动 EDA 软件需求和 ASP 提升。' },
-  RMBS: { summary: 'Rambus 是专注于内存接口 IP 授权的半导体 IP 公司。其 HBM（高带宽内存）控制器和 PHY 接口 IP 被 NVIDIA、AMD 等 GPU 厂商广泛授权使用，每颗搭载 HBM 的 AI GPU 都需向 Rambus 缴纳版税。商业模式以"躺收版税"为主，利润率高达 30%+，是 AI 算力扩张的"收税者"标的，但成长天花板相对有限。' },
-  INTC: { summary: 'Intel 是全球最大 x86 CPU 制造商，也是唯一同时具备芯片设计和先进制造能力的美国公司（IDM 模式）。Gaudi 3 AI 加速器正面挑战 NVIDIA；Intel Foundry Services（IFS）争夺台积电外包客户。目前处于战略转型阵痛期，18A 制程被视为关键翻盘节点。若代工业务成功，将是 AI 时代美国本土算力自主化最重要的基础。' },
-  NVDA: { summary: 'NVIDIA 是 AI 时代最核心的基础设施公司，主导全球 AI 训练市场（市占率超 80%）。H100/H200/B200/GB200 GPU 是当前 AI 大模型训练的事实标准，CUDA 生态形成极深的软件护城河，切换成本极高。收购 Mellanox 后掌控 AI 集群互联（InfiniBand）。2025 年营收预计超 1500 亿美元，是 AI 算力军备竞赛的最大受益者，也是本产业链最重要的枢纽节点。' },
-  AVGO: { summary: 'Broadcom 是 AI 基础设施双主线受益者：① 网络交换 ASIC（Tomahawk 系列）全球市占率超 80%，数据中心交换机的事实标准；② 为谷歌（TPU）、Meta（MTIA）、苹果（神经引擎）定制 AI 芯片（XPU），定制 ASIC 业务 2025 年营收预计超 200 亿美元并快速增长。AVGO 是唯一能在规模上与 NVDA 形成补充/竞争的公司。' },
-  MCHP: { summary: 'Microchip Technology 是全球最大 MCU（微控制器）供应商之一，同时生产 FPGA、时钟/同步 IC、PCIe 重定时器、以太网控制器。在数据中心中负责电源序列管理、PCIe 信号完整性和时序同步，是服务器主板的"水暖工"。AI 服务器单价远超普通服务器，对高精度时序和电源管理芯片需求更旺盛，MCHP 受益于价格弹性提升。' },
-  QUIK: { summary: 'QuickLogic 是小市值 eFPGA（嵌入式可编程门阵列）IP 供应商，专注于传感器集线器和边缘 AI 处理。市值极小（约 1 亿美元），流动性有限，属于边缘 AI 领域的高风险高弹性标的。其 eFPGA IP 授权给芯片设计公司嵌入到 SoC 中，赋予芯片现场可编程能力，适合对延迟敏感的 AIoT 场景。投资需注意流动性风险。' },
-  SIMO: { summary: 'Silicon Motion Technology 是全球领先的 NAND 闪存控制器芯片公司（台湾上市，美股 ADR）。其控制器固件 IP 被三星、SK Hynix、美光等存储厂广泛采用，同时供货企业级 SSD 品牌。AI 数据中心对存储的读写性能要求极高，推动 PCIe Gen5 NVMe SSD 需求爆发，SIMO 是这一趋势的直接受益者。' },
-  MU:   { summary: 'Micron Technology 是全球三大存储芯片公司之一（另两家为 SK Hynix、三星）。其 HBM3E 高带宽内存直接封装进 NVIDIA B200 GPU（每颗 GPU 含 192GB HBM3E），是 AI 算力最直接的基础元件之一。HBM 价格自 2024 年暴涨超 600%，Micron 的 AI 内存业务盈利快速反转，数据中心 DRAM 和 NAND 需求也同步受益。' },
-  AAOI: { summary: 'Applied Optoelectronics 是光学收发器（transceiver）及激光二极管模块制造商，主要产品为 100G/400G 数据中心光模块，客户包括 AWS、微软、谷歌等超大规模云厂商。市值较小（约 10 亿美元），业绩波动大，与数据中心资本支出节奏高度相关。AI 建设潮推动 400G/800G 光模块需求急速增长，是高弹性但高波动的光互联标的。' },
-  NOK:  { summary: 'Nokia 是全球电信设备与光网络基础设施巨头，IP 路由器和光传输设备广泛部署于数据中心互联及骨干网络。AI 带动数据流量爆炸式增长是其中期催化剂，数据中心互联（DCI）业务占比持续提升。品牌认知偏传统电信，但网络基础设施的重要性随 AI 流量增长而上升，估值较同行偏低，属于防御性配置选项。' },
-  COHR: { summary: 'Coherent Corp（前身 II-VI）是全球最大光学元器件及模块公司之一。800G/1.6T 超高速光模块是其核心增长业务，直接竞争对手是 AAOI，但规模更大、产品线更全。为超大规模云厂商提供数据中心内部光互联解决方案，同时供货 AI 集群所需的高密度光收发器，受益于 AI 数据中心建设潮。' },
-  MRVL: { summary: 'Marvell Technology 为超大规模云厂商定制 AI ASIC 及光学 DSP 芯片，已获得亚马逊、微软等大型定制芯片合同。AVGO 之后，Marvell 是第二大"云定制芯片"受益者。同时布局 5G 基站芯片和存储控制器，AI 定制 ASIC 业务高速增长拉动整体估值重估。被视为超大规模云厂商减少 NVDA 依赖、自研 AI 芯片趋势的最大受益方之一。' },
-  ANET: { summary: 'Arista Networks 是全球超大规模云数据中心首选以太网交换机品牌，亚马逊 AWS 和微软 Azure 是其最大客户，合计贡献营收约 40%。AI GPU 集群对网络带宽要求极高，推动 400G/800G 交换机超周期需求，2025 年订单能见度创历史新高。软件定义网络（EOS）是其护城河，订阅收入占比持续提升。' },
-  SMCI: { summary: 'Super Micro Computer 是 GPU 服务器整机设计与制造商，专注于液冷服务器系统和高密度机架解决方案，可理解为 NVIDIA GPU 的"外包装盒"。Nebius、HUT 8、Iris Energy 等 AI 云公司的主要硬件采购来源。2024 年审计风波后业务逐步恢复，受益于 AI 基础设施建设潮中极旺盛的 GPU 服务器需求。' },
-  P:    { summary: 'Everpure（NYSE: P，原 Pure Storage / PSTG，2026 年 2 月更名换码）是企业级全闪存存储平台公司。FlashBlade//EXA 为 AI 训练提供极高吞吐的共享存储，与 NVIDIA AI Factory 深度集成，可将 AI 集群 GPU 利用率维持在 90% 以上。Evergreen//One 存储即服务（STaaS）模式带来稳定订阅收入。AI 是公司增长最快的业务，三位数同比增速，与 SMCI 联合研发 Data Stream 自动化数据编排产品。' },
-  VRT:  { summary: 'Vertiv Holdings 是关键数据中心基础设施提供商，专注于电源（UPS、PDU、配电柜）和热管理（液冷、风冷）系统。AI GPU（如 B200）单颗功耗高达 1000W 以上，比传统服务器高 5-10 倍，液冷成为刚需。全球数据中心资本支出爆发是 Vertiv 最直接的驱动力，2025/2026 年订单超额交付，被视为 AI 基础设施最纯粹的受益标的之一。' },
-  AMZN: { summary: 'Amazon Web Services（AWS）是全球最大云服务商（市占率约 31%）。AWS 自研 Trainium2（训练专用）和 Inferentia2（推理专用）AI 芯片，战略目的是减少对 NVIDIA 的依赖并降低算力成本。AWS Bedrock 提供多模型 API 服务，Amazon Q 面向企业。AI 是 AWS 增长的核心叙事，数据中心资本支出 2026 年预计超 1000 亿美元。' },
-  NBIS: { summary: 'Nebius Group 是前 Yandex N.V. 旗下 AI 基础设施云公司，2024 年剥离俄罗斯资产后重组上市。定位为 AI 原生 GPU 云，提供 Managed GPU 集群、AI 训练/推理平台及 AI 开发工具。NVIDIA 直接战略投资，Everpure 和 Arista 是其核心硬件供应商。高速成长但仍处亏损阶段，是 NVDA 产业链纯度最高的二线受益标的之一。' },
-  HUT:  { summary: 'Hut 8 是加拿大数字基础设施公司，正从比特币挖矿转型为高性能计算（HPC）与 AI GPU 云。持有大量自有电力合同和数据中心资产，是 AI 算力基础设施的"地主"型公司。转型叙事和持有比特币的资产配置特性，使其同时受到 AI 投资者和比特币多头的关注，属于双重催化剂驱动的标的。' },
-  IREN: { summary: 'Iris Energy 专注于可再生能源驱动的 AI 云 GPU 集群，同时经营比特币挖矿业务（双轨并行）。自建数据中心使用水电/太阳能，单位电力成本极低（约 3 美分/度），支撑 GPU 云高毛利。绿色能源 + AI 算力双重叙事是机构买入逻辑，在碳排放监管趋严的背景下，低碳算力基础设施具有长期竞争壁垒。' },
-  AMD:  { summary: 'Advanced Micro Devices 是 NVIDIA 在 AI 算力领域最直接的挑战者。MI300X GPU（每颗集成 192GB HBM3）在 AI 推理性能上与 H100 旗鼓相当，且价格更具竞争力；EPYC CPU 在数据中心服务器市占率持续蚕食英特尔份额，已超 30%。AMD 的 ROCm 软件生态是追赶 CUDA 的关键战场，目前差距仍大但在快速收窄。AWS、微软 Azure、Meta 均已采购 MI300X 作为 NVDA 的补充/替代。2025 年 AI GPU 营收预计超 50 亿美元，是最值得关注的 NVDA 替代受益标的。' },
-  ARM:  { summary: 'Arm Holdings 是全球最重要的 CPU 架构 IP 授权公司，旗下 ARM 指令集架构（ISA）是全球 99% 移动芯片和越来越多数据中心芯片的设计基础。亚马逊 Graviton、微软 Azure Cobalt、苹果 M 系列、高通骁龙全部基于 ARM 授权设计。商业模式为"躺收版税"：每颗芯片出货向设计公司收取许可费 + 版税，利润率极高。AI 推理场景对低功耗的需求推动 ARM 架构在数据中心快速渗透，是云厂商摆脱 x86 垄断的核心路径，长期受益于算力需求的多元化。' },
-  MSFT: { summary: 'Microsoft Azure 是全球第二大云服务商，通过对 OpenAI 的独家合作掌握最领先 AI 模型访问权。Azure AI 服务、Microsoft 365 Copilot、GitHub Copilot 是其商业化 AI 变现主力，已开始贡献实质性收入。自研 Maia 2 AI 加速芯片战略性减少 NVIDIA 依赖，数据中心资本支出 2026 年超 1000 亿美元。AI 变现路径最清晰的超大规模科技公司之一。' },
-};
-
-// ── Render diagram ────────────────────────────────────────────────────────────
-const diagram = document.getElementById('diagram');
-const totalH = LY[5] + CH + 30;
-diagram.style.height = totalH + 'px';
-
-LY.forEach((y, i) => {
-  const b = document.createElement('div');
-  b.className = 'band';
-  b.style.cssText = `top:${y - 12}px; height:${CH + 24}px; background:${LCOLORS[i]}10;`;
-  diagram.appendChild(b);
-});
-
-const nm = {};
-nodes.forEach(n => {
-  const card = document.createElement('div');
-  card.className = `card l${n.l} ${n.u ? 'user' : 'add'}`;
-  card.style.left = n.x + 'px';
-  card.style.top  = LY[n.l] + 'px';
-
-  // Heat overlay (sits above bg, below text)
-  const heatLayer = document.createElement('div');
-  heatLayer.className = 'heat-layer';
-
-  // Price row
-  const priceRow = document.createElement('div');
-  priceRow.className = 'price-row hidden';
-
-  card.innerHTML =
-    `<div class="tic">${n.id}</div>` +
-    `<div class="co">${n.co}</div>` +
-    `<div class="desc">${n.desc.split('\n').join('<br>')}</div>`;
-
-  card.prepend(heatLayer);   // first child — z-index 0
-  card.appendChild(priceRow);
-
-  diagram.appendChild(card);
-  nm[n.id] = { x: n.x, y: LY[n.l], l: n.l, co: n.co, el: card, heatEl: heatLayer, priceEl: priceRow };
-});
-
-// ── SVG arrows ────────────────────────────────────────────────────────────────
-const svg = document.getElementById('arrows');
-svg.setAttribute('width', '1320');
-svg.setAttribute('height', String(totalH));
-
-function mkMarker(id, color) {
-  return `<marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${color}"/></marker>`;
-}
-const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
-defs.innerHTML = mkMarker('ah-d','rgba(100,116,139,0.55)') + mkMarker('ah-g','#22c55e') + mkMarker('ah-y','#eab308') + mkMarker('ah-o','#f97316') + mkMarker('ah-r','#ef4444');
-svg.appendChild(defs);
-
-const svgPaths = [];
-edges.forEach((e) => {
-  const s = nm[e.f], t = nm[e.t];
-  if (!s || !t) { svgPaths.push(null); return; }
-  const x1 = s.x + CW/2, y1 = s.y + CH, x2 = t.x + CW/2, y2 = t.y - 1, mid = (y1+y2)/2;
-  const p = document.createElementNS('http://www.w3.org/2000/svg','path');
-  p.setAttribute('d', `M${x1},${y1} C${x1},${mid} ${x2},${mid} ${x2},${y2}`);
-  p.setAttribute('stroke','rgba(100,116,139,0.20)'); p.setAttribute('stroke-width','1.5');
-  p.setAttribute('fill','none'); p.setAttribute('marker-end','url(#ah-d)');
-  p.style.transition = 'opacity 0.15s ease';
-  svg.appendChild(p); svgPaths.push(p);
-});
-
-const adj = {};
-nodes.forEach(n => adj[n.id] = []);
-edges.forEach((e, i) => {
-  if (adj[e.f]) adj[e.f].push({ id: e.t, s: e.s, dir: 'out', i });
-  if (adj[e.t]) adj[e.t].push({ id: e.f, s: e.s, dir: 'in',  i });
-});
-
+// ── Render functions ──────────────────────────────────────────────────────────
 function scoreStyle(s) {
   if (s >= 8) return { color:'#22c55e', mk:'ah-g' };
   if (s >= 6) return { color:'#eab308', mk:'ah-y' };
   if (s >= 4) return { color:'#f97316', mk:'ah-o' };
   return             { color:'#ef4444', mk:'ah-r' };
 }
-
-function resetAll() {
-  nodes.forEach(n => {
-    const el = nm[n.id].el;
-    el.classList.remove('hovered','dimmed','lit','selected');
-    el.style.boxShadow = '';
-    el.querySelectorAll('.score-badge').forEach(b => b.remove());
-  });
-  svgPaths.forEach(p => {
-    if (!p) return;
-    p.setAttribute('stroke','rgba(100,116,139,0.20)'); p.setAttribute('stroke-width','1.5');
-    p.setAttribute('marker-end','url(#ah-d)'); p.style.opacity = '1';
-  });
-}
-
-// ── Hover ─────────────────────────────────────────────────────────────────────
-nodes.forEach(n => {
-  const el = nm[n.id].el;
-  el.addEventListener('mouseenter', () => {
-    if (selectedId !== null) return;
-    nodes.forEach(nn => nm[nn.id].el.classList.add('dimmed'));
-    svgPaths.forEach(p => { if (p) p.style.opacity = '0.04'; });
-    el.classList.remove('dimmed'); el.classList.add('hovered');
-    (adj[n.id] || []).forEach(({ id, s, dir, i }) => {
-      const nb = nm[id]; if (!nb) return;
-      nb.el.classList.remove('dimmed'); nb.el.classList.add('lit');
-      const { color } = scoreStyle(s);
-      const badge = document.createElement('div');
-      badge.className = 'score-badge';
-      badge.style.background = color;
-      badge.innerHTML = `<span class="da">${dir==='out'?'↓供应':'↑采购'}</span>${s}<span style="opacity:.6;font-size:8px">/10</span>`;
-      nb.el.appendChild(badge);
-      const p = svgPaths[i]; if (!p) return;
-      const { color: sc, mk } = scoreStyle(s);
-      p.style.opacity = '1'; p.setAttribute('stroke', sc + 'cc');
-      p.setAttribute('stroke-width','2.8'); p.setAttribute('marker-end',`url(#${mk})`);
-    });
-  });
-  el.addEventListener('mouseleave', () => {
-    if (selectedId !== null) return;
-    resetAll();
-  });
-});
-
-// ── Real-time quote store ─────────────────────────────────────────────────────
-const liveQuotes = {};
 
 function heatBg(pct) {
   if (pct == null) return '';
@@ -743,11 +755,7 @@ function heatBg(pct) {
 
 function applyQuote({ ticker, price, changePct }) {
   const n = nm[ticker]; if (!n) return;
-
-  // Heatmap overlay
   n.heatEl.style.background = heatBg(changePct);
-
-  // Price row
   const priceStr = price != null
     ? '$' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     : '';
@@ -755,63 +763,172 @@ function applyQuote({ ticker, price, changePct }) {
     ? (changePct >= 0 ? '+' : '') + changePct.toFixed(2) + '%'
     : '';
   const cls = changePct > 0.01 ? 'pos' : changePct < -0.01 ? 'neg' : 'neu';
-
   n.priceEl.classList.remove('hidden');
   n.priceEl.innerHTML =
     `<span class="live-price">${priceStr}</span>` +
     `<span class="live-chg ${cls}">${pctStr}</span>`;
 }
 
-// ── WebSocket connection ──────────────────────────────────────────────────────
-// Auto-detect: if served from localhost, use same host; otherwise use localhost:8080
-const WS_URL = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-  ? `ws://${location.host}`
-  : 'ws://localhost:8080';
-let ws = null;
-
-function setWsBar(connected, html) {
-  const bar = document.getElementById('ws-bar');
-  bar.className = connected ? 'connected' : 'disconnected';
-  document.getElementById('ws-msg').innerHTML = html;
+function resetAll() {
+  Object.values(nm).forEach(n => {
+    const el = n.el;
+    el.classList.remove('hovered','dimmed','lit','selected');
+    el.style.boxShadow = '';
+    el.querySelectorAll('.score-badge').forEach(b => b.remove());
+  });
+  svgPaths.forEach(p => {
+    if (!p) return;
+    p.setAttribute('stroke','rgba(100,116,139,0.20)'); p.setAttribute('stroke-width','1.5');
+    p.setAttribute('marker-end','url(#ah-d)'); p.style.opacity = '1';
+  });
 }
 
-function connectWs() {
-  try { ws = new WebSocket(WS_URL); } catch(e) { scheduleReconnect(); return; }
+function renderChart(chartKey) {
+  const chart = CHARTS[chartKey];
+  if (!chart) return;
+  currentChart = chartKey;
+  localStorage.setItem(LS_CHART, chartKey);
 
-  ws.onopen = () => {
-    setWsBar(true, '⚡ 实时行情已连接 — TradingView Live');
-  };
+  // Update tab states
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.chart === chartKey);
+  });
 
-  ws.onmessage = (evt) => {
-    try {
-      const d = JSON.parse(evt.data);
-      if (d.type === 'quote') {
-        liveQuotes[d.ticker] = d;
-        applyQuote(d);
-        // Update panel if this ticker is currently open
-        if (selectedId === d.ticker) updatePanelLive(d);
-      }
-    } catch (_) {}
-  };
+  // Update title + subtitle
+  document.getElementById('page-title').textContent = chart.title;
+  document.getElementById('page-subtitle').innerHTML = chart.subtitle;
 
-  ws.onclose = () => {
-    setWsBar(false, '实时数据未连接 — 终端运行：<code style="background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:4px;font-size:10px">cd server &amp;&amp; npm install &amp;&amp; npm start</code>');
-    scheduleReconnect();
-  };
+  // Update top-bar
+  const topBar = document.getElementById('top-bar');
+  topBar.innerHTML = chart.layerNames.map((name, i) =>
+    `<span class="lpill"><span class="lpill-dot" style="background:${LCOLORS[i]}"></span>${i} · ${name}</span>`
+  ).join('') + `
+    <div class="badges">
+      <span class="badge"><span class="b-sq b-user"></span>核心标的</span>
+      <span class="badge"><span class="b-sq b-add"></span>补充标的</span>
+    </div>
+  `;
 
-  ws.onerror = () => ws.close();
+  // Reset state
+  closePanel();
+  nm = {};
+  adj = {};
+  svgPaths = [];
+
+  // Clear diagram
+  const diagram = document.getElementById('diagram');
+  diagram.innerHTML = '<svg id="arrows"></svg>';
+  diagram.style.width = chart.width + 'px';
+
+  const nodes = chart.nodes;
+  const edges = chart.edges;
+  const totalH = LY[5] + CH + 30;
+  diagram.style.height = totalH + 'px';
+
+  // Bands
+  LY.forEach((y, i) => {
+    const b = document.createElement('div');
+    b.className = 'band';
+    b.style.cssText = `top:${y - 12}px; height:${CH + 24}px; background:${LCOLORS[i]}10;`;
+    diagram.appendChild(b);
+  });
+
+  // Cards
+  nodes.forEach(n => {
+    const card = document.createElement('div');
+    card.className = `card l${n.l} ${n.u ? 'user' : 'add'}`;
+    card.style.left = n.x + 'px';
+    card.style.top  = LY[n.l] + 'px';
+
+    const heatLayer = document.createElement('div');
+    heatLayer.className = 'heat-layer';
+
+    const priceRow = document.createElement('div');
+    priceRow.className = 'price-row hidden';
+
+    card.innerHTML =
+      `<div class="tic">${n.id}</div>` +
+      `<div class="co">${n.co}</div>` +
+      `<div class="desc">${n.desc.split('\n').join('<br>')}</div>`;
+
+    card.prepend(heatLayer);
+    card.appendChild(priceRow);
+
+    diagram.appendChild(card);
+    nm[n.id] = { x: n.x, y: LY[n.l], l: n.l, co: n.co, el: card, heatEl: heatLayer, priceEl: priceRow };
+  });
+
+  // SVG arrows
+  const svg = document.getElementById('arrows');
+  svg.setAttribute('width', String(chart.width));
+  svg.setAttribute('height', String(totalH));
+
+  function mkMarker(id, color) {
+    return `<marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${color}"/></marker>`;
+  }
+  const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+  defs.innerHTML = mkMarker('ah-d','rgba(100,116,139,0.55)') + mkMarker('ah-g','#22c55e') + mkMarker('ah-y','#eab308') + mkMarker('ah-o','#f97316') + mkMarker('ah-r','#ef4444');
+  svg.appendChild(defs);
+
+  edges.forEach((e) => {
+    const s = nm[e.f], t = nm[e.t];
+    if (!s || !t) { svgPaths.push(null); return; }
+    const x1 = s.x + CW/2, y1 = s.y + CH, x2 = t.x + CW/2, y2 = t.y - 1, mid = (y1+y2)/2;
+    const p = document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d', `M${x1},${y1} C${x1},${mid} ${x2},${mid} ${x2},${y2}`);
+    p.setAttribute('stroke','rgba(100,116,139,0.20)'); p.setAttribute('stroke-width','1.5');
+    p.setAttribute('fill','none'); p.setAttribute('marker-end','url(#ah-d)');
+    p.style.transition = 'opacity 0.15s ease';
+    svg.appendChild(p); svgPaths.push(p);
+  });
+
+  // Adjacency
+  nodes.forEach(n => adj[n.id] = []);
+  edges.forEach((e, i) => {
+    if (adj[e.f]) adj[e.f].push({ id: e.t, s: e.s, dir: 'out', i });
+    if (adj[e.t]) adj[e.t].push({ id: e.f, s: e.s, dir: 'in',  i });
+  });
+
+  // Hover bindings
+  nodes.forEach(n => {
+    const el = nm[n.id].el;
+    el.addEventListener('mouseenter', () => {
+      if (selectedId !== null) return;
+      Object.values(nm).forEach(nn => nn.el.classList.add('dimmed'));
+      svgPaths.forEach(p => { if (p) p.style.opacity = '0.04'; });
+      el.classList.remove('dimmed'); el.classList.add('hovered');
+      (adj[n.id] || []).forEach(({ id, s, dir, i }) => {
+        const nb = nm[id]; if (!nb) return;
+        nb.el.classList.remove('dimmed'); nb.el.classList.add('lit');
+        const { color } = scoreStyle(s);
+        const badge = document.createElement('div');
+        badge.className = 'score-badge';
+        badge.style.background = color;
+        badge.innerHTML = `<span class="da">${dir==='out'?'↓供应':'↑采购'}</span>${s}<span style="opacity:.6;font-size:8px">/10</span>`;
+        nb.el.appendChild(badge);
+        const p = svgPaths[i]; if (!p) return;
+        const { color: sc, mk } = scoreStyle(s);
+        p.style.opacity = '1'; p.setAttribute('stroke', sc + 'cc');
+        p.setAttribute('stroke-width','2.8'); p.setAttribute('marker-end',`url(#${mk})`);
+      });
+    });
+    el.addEventListener('mouseleave', () => {
+      if (selectedId !== null) return;
+      resetAll();
+    });
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (selectedId === n.id) closePanel(); else openPanel(n.id);
+    });
+  });
+
+  // Apply cached quotes immediately
+  Object.values(liveQuotes).forEach(q => applyQuote(q));
 }
 
-function scheduleReconnect() { setTimeout(connectWs, 4000); }
-
-// ── Panel live price update ───────────────────────────────────────────────────
-function updatePanelLive(q) {
-  const el = document.getElementById('panel-live-block');
-  if (!el) return;
-  const pct = q.changePct;
-  const cls = pct > 0.01 ? 'pos' : pct < -0.01 ? 'neg' : 'neu';
-  el.innerHTML = buildPanelLiveHTML(q);
-}
+// ── Panel ─────────────────────────────────────────────────────────────────────
+const panel     = document.getElementById('panel');
+const panelBody = document.getElementById('panel-body');
 
 function buildPanelLiveHTML(q) {
   if (!q) return '';
@@ -838,7 +955,12 @@ function buildPanelLiveHTML(q) {
   `;
 }
 
-// ── Finnhub helpers ───────────────────────────────────────────────────────────
+function updatePanelLive(q) {
+  const el = document.getElementById('panel-live-block');
+  if (!el) return;
+  el.innerHTML = buildPanelLiveHTML(q);
+}
+
 async function fetchNews(symbol) {
   const key = getFhKey(); if (!key) throw new Error('NO_KEY');
   const to = new Date(), from = new Date();
@@ -901,21 +1023,17 @@ function renderEarnings(data) {
   }).join('');
 }
 
-// ── Panel ─────────────────────────────────────────────────────────────────────
-const panel     = document.getElementById('panel');
-const panelBody = document.getElementById('panel-body');
-let selectedId  = null;
-let newsOpen = false, earningsOpen = false;
-
 function openPanel(id) {
   selectedId = id; newsOpen = false; earningsOpen = false;
   resetAll();
+  if (!nm[id]) return;
   nm[id].el.classList.add('selected');
-  const node = nm[id];
-  const d    = info[id] || {};
-  const lc   = LCOLORS[node.l];
-  const ln   = LNAMES[node.l];
-  const q    = liveQuotes[id] || null;
+  const chart = CHARTS[currentChart];
+  const node  = nm[id];
+  const d     = chart.info[id] || {};
+  const lc    = LCOLORS[node.l];
+  const ln    = chart.layerNames[node.l];
+  const q     = liveQuotes[id] || null;
 
   const ups   = (adj[id]||[]).filter(e => e.dir === 'in').sort((a,b) => b.s - a.s);
   const downs = (adj[id]||[]).filter(e => e.dir === 'out').sort((a,b) => b.s - a.s);
@@ -980,19 +1098,20 @@ function openPanel(id) {
     el.addEventListener('click', () => openPanel(el.dataset.id));
   });
 
-  async function handleDataBtn(btnId, sectionId, contentId, flag, fetchFn, renderFn, label) {
+  function bindDataBtn(btnId, sectionId, contentId, flagName, fetchFn, renderFn, label) {
     const btn = document.getElementById(btnId);
     const sec = document.getElementById(sectionId);
     const con = document.getElementById(contentId);
     btn.addEventListener('click', async () => {
-      if (flag.open) {
-        flag.open = false;
+      const open = (flagName === 'news') ? newsOpen : earningsOpen;
+      if (open) {
+        if (flagName === 'news') newsOpen = false; else earningsOpen = false;
         sec.classList.add('hidden');
         btn.classList.remove('active');
         return;
       }
       if (!getFhKey()) { document.getElementById('settings-btn').click(); return; }
-      flag.open = true;
+      if (flagName === 'news') newsOpen = true; else earningsOpen = true;
       btn.classList.add('active', 'loading');
       btn.innerHTML = `<span class="spinner"></span> 加载中…`;
       sec.classList.remove('hidden');
@@ -1011,20 +1130,11 @@ function openPanel(id) {
     });
   }
 
-  const newsFlag     = { open: false };
-  const earningsFlag = { open: false };
-  handleDataBtn('btn-news',     'news-section',     'news-content',     newsFlag,     fetchNews,     renderNews,     '📰 最近新闻' + keyTip);
-  handleDataBtn('btn-earnings', 'earnings-section', 'earnings-content', earningsFlag, fetchEarnings, renderEarnings, '📊 过往财报' + keyTip);
+  bindDataBtn('btn-news',     'news-section',     'news-content',     'news',     fetchNews,     renderNews,     '📰 最近新闻' + keyTip);
+  bindDataBtn('btn-earnings', 'earnings-section', 'earnings-content', 'earnings', fetchEarnings, renderEarnings, '📊 过往财报' + keyTip);
 
   panel.classList.add('open');
 }
-
-nodes.forEach(n => {
-  nm[n.id].el.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (selectedId === n.id) closePanel(); else openPanel(n.id);
-  });
-});
 
 function closePanel() {
   panel.classList.remove('open');
@@ -1037,8 +1147,51 @@ document.getElementById('diagram').addEventListener('click', (e) => {
   if (!e.target.closest('.card')) closePanel();
 });
 
+// ── Tab switching ─────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.chart;
+    if (target !== currentChart) renderChart(target);
+  });
+});
+
+// ── WebSocket connection ──────────────────────────────────────────────────────
+const WS_URL = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+  ? `ws://${location.host}`
+  : 'ws://localhost:8080';
+let ws = null;
+
+function setWsBar(connected, html) {
+  const bar = document.getElementById('ws-bar');
+  bar.className = connected ? 'connected' : 'disconnected';
+  document.getElementById('ws-msg').innerHTML = html;
+}
+
+function connectWs() {
+  try { ws = new WebSocket(WS_URL); } catch(e) { scheduleReconnect(); return; }
+  ws.onopen = () => setWsBar(true, '⚡ 实时行情已连接 — TradingView Live');
+  ws.onmessage = (evt) => {
+    try {
+      const d = JSON.parse(evt.data);
+      if (d.type === 'quote') {
+        liveQuotes[d.ticker] = d;
+        applyQuote(d);
+        if (selectedId === d.ticker) updatePanelLive(d);
+      }
+    } catch (_) {}
+  };
+  ws.onclose = () => {
+    setWsBar(false, '实时数据未连接 — 终端运行：<code style="background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:4px;font-size:10px">cd server &amp;&amp; npm install &amp;&amp; npm start</code>');
+    scheduleReconnect();
+  };
+  ws.onerror = () => ws.close();
+}
+function scheduleReconnect() { setTimeout(connectWs, 4000); }
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 refreshSettingsBtn();
+const initialChart = localStorage.getItem(LS_CHART) || 'ai';
+renderChart(initialChart);
 connectWs();
 </script>
 </body>

@@ -38,6 +38,28 @@ const SYMBOLS = {
   MSFT: 'NASDAQ:MSFT',
   AMD:  'NASDAQ:AMD',
   ARM:  'NASDAQ:ARM',
+  // ── Robotics chart additions ───────────────────────────────────────────
+  RRX:  'NYSE:RRX',     // Regal Rexnord — precision gearboxes
+  TKR:  'NYSE:TKR',     // Timken — bearings
+  AME:  'NYSE:AME',     // Ametek — precision motion
+  QCOM: 'NASDAQ:QCOM',  // Qualcomm — Dragonwing robotics chips
+  TXN:  'NASDAQ:TXN',   // Texas Instruments — motor control ICs
+  ADI:  'NASDAQ:ADI',   // Analog Devices — IMU/MEMS
+  CGNX: 'NASDAQ:CGNX',  // Cognex — machine vision
+  OUST: 'NYSE:OUST',    // Ouster — LiDAR
+  AEVA: 'NASDAQ:AEVA',  // Aeva — FMCW LiDAR
+  TDY:  'NYSE:TDY',     // Teledyne — FLIR thermal/vision
+  ROK:  'NYSE:ROK',     // Rockwell Automation
+  EMR:  'NYSE:EMR',     // Emerson Electric
+  ABB:  'NYSE:ABB',     // ABB Ltd (ADR)
+  TER:  'NASDAQ:TER',   // Teradyne — Universal Robots + MiR
+  SYM:  'NASDAQ:SYM',   // Symbotic — warehouse robotics
+  ISRG: 'NASDAQ:ISRG',  // Intuitive Surgical — da Vinci
+  MDT:  'NYSE:MDT',     // Medtronic — Hugo RAS
+  SYK:  'NYSE:SYK',     // Stryker — Mako orthopedic
+  TSLA: 'NASDAQ:TSLA',  // Tesla — Optimus humanoid
+  AVAV: 'NASDAQ:AVAV',  // AeroVironment — drones
+  WMT:  'NYSE:WMT',     // Walmart — Symbotic deployment
 };
 
 // ── HTTP + WebSocket server ───────────────────────────────────────────────────
