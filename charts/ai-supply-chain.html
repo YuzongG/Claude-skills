@@ -13,7 +13,9 @@ body {
   padding-left: 200px;
   min-width: 1240px;
   overflow-x: auto;
+  transition: padding-left 0.28s cubic-bezier(0.4,0,0.2,1);
 }
+body.sidebar-collapsed { padding-left: 56px; }
 
 /* ── Sidebar ── */
 #sidebar {
@@ -24,34 +26,65 @@ body {
   padding: 22px 12px;
   z-index: 9500;
   display: flex; flex-direction: column;
-  overflow-y: auto;
+  overflow-y: auto; overflow-x: hidden;
+  transition: width 0.28s cubic-bezier(0.4,0,0.2,1);
 }
+#sidebar.collapsed { width: 56px; padding: 22px 8px; }
+
+#sidebar-toggle {
+  position: absolute; top: 18px; right: -12px;
+  width: 24px; height: 24px;
+  background: #0d1829;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 50%;
+  color: #94a3b8; font-size: 12px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s, transform 0.28s cubic-bezier(0.4,0,0.2,1);
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+#sidebar-toggle:hover { background: #1e293b; color: #f1f5f9; }
+#sidebar.collapsed #sidebar-toggle { transform: rotate(180deg); }
+
 .sidebar-brand {
   display: flex; align-items: center; gap: 9px;
   padding: 0 6px 18px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
   margin-bottom: 12px;
+  white-space: nowrap; overflow: hidden;
 }
-.sidebar-brand-icon { font-size: 18px; }
+#sidebar.collapsed .sidebar-brand { justify-content: center; padding: 0 0 18px; }
+.sidebar-brand-icon { font-size: 18px; flex-shrink: 0; }
 .sidebar-brand-text {
   font-size: 13px; font-weight: 800; color: #f1f5f9;
   letter-spacing: 0.04em;
+  transition: opacity 0.2s ease;
 }
 .sidebar-section {
   font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
   text-transform: uppercase; color: #334155;
   padding: 0 6px; margin: 6px 0 8px;
+  white-space: nowrap; overflow: hidden;
+  transition: opacity 0.2s ease, height 0.2s ease, margin 0.2s ease;
 }
+#sidebar.collapsed .sidebar-brand-text,
+#sidebar.collapsed .sidebar-section {
+  opacity: 0; height: 0; margin: 0; pointer-events: none;
+}
+
 .tab-btn {
   display: flex; align-items: center; gap: 12px;
   padding: 11px 11px; border-radius: 9px;
   background: transparent; border: none; cursor: pointer;
   color: #94a3b8;
   text-align: left;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s, color 0.15s, padding 0.28s;
   margin-bottom: 4px;
   width: 100%;
+  white-space: nowrap; overflow: hidden;
+  position: relative;
 }
+#sidebar.collapsed .tab-btn { padding: 11px 8px; justify-content: center; gap: 0; }
 .tab-btn:hover { background: rgba(255,255,255,0.04); color: #cbd5e1; }
 .tab-btn.active {
   background: rgba(59,130,246,0.12);
@@ -59,10 +92,35 @@ body {
   box-shadow: inset 3px 0 0 #3b82f6;
 }
 .tab-icon { font-size: 20px; flex-shrink: 0; line-height: 1; }
-.tab-text { display: flex; flex-direction: column; gap: 2px; }
+.tab-text {
+  display: flex; flex-direction: column; gap: 2px;
+  transition: opacity 0.2s ease, width 0.28s ease;
+  overflow: hidden;
+}
+#sidebar.collapsed .tab-text { opacity: 0; width: 0; pointer-events: none; }
 .tab-label { font-size: 13px; font-weight: 700; line-height: 1.2; }
 .tab-sub   { font-size: 10px; color: #64748b; }
 .tab-btn.active .tab-sub { color: #94a3b8; }
+
+/* Tooltip on collapsed sidebar tabs */
+#sidebar.collapsed .tab-btn::after {
+  content: attr(data-tooltip);
+  position: absolute; left: calc(100% + 14px); top: 50%;
+  transform: translateY(-50%);
+  background: #1e293b;
+  color: #f1f5f9;
+  font-size: 11px; font-weight: 600;
+  padding: 5px 10px; border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  z-index: 100;
+}
+#sidebar.collapsed .tab-btn:hover::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(2px);
+}
 
 /* ── Header ── */
 header {
@@ -390,19 +448,20 @@ header {
 
 <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
 <aside id="sidebar">
+  <button id="sidebar-toggle" title="展开 / 收起侧边栏">‹</button>
   <div class="sidebar-brand">
     <span class="sidebar-brand-icon">📊</span>
     <span class="sidebar-brand-text">产业图谱</span>
   </div>
   <div class="sidebar-section">主题</div>
-  <button class="tab-btn" data-chart="ai">
+  <button class="tab-btn" data-chart="ai" data-tooltip="AI 算力 · 30">
     <span class="tab-icon">🧠</span>
     <div class="tab-text">
       <div class="tab-label">AI 算力</div>
       <div class="tab-sub">基础设施 · 30</div>
     </div>
   </button>
-  <button class="tab-btn" data-chart="robot">
+  <button class="tab-btn" data-chart="robot" data-tooltip="机器人 · 24">
     <span class="tab-icon">🤖</span>
     <div class="tab-text">
       <div class="tab-label">机器人</div>
@@ -694,8 +753,22 @@ const CHARTS = {
 };
 
 // ── Settings ──────────────────────────────────────────────────────────────────
-const LS_FH    = 'ai_chain_finnhub_key';
-const LS_CHART = 'ai_chain_current_chart';
+const LS_FH       = 'ai_chain_finnhub_key';
+const LS_CHART    = 'ai_chain_current_chart';
+const LS_SIDEBAR  = 'ai_chain_sidebar_collapsed';
+
+// ── Sidebar collapse/expand ───────────────────────────────────────────────────
+function setSidebarCollapsed(collapsed) {
+  document.getElementById('sidebar').classList.toggle('collapsed', collapsed);
+  document.body.classList.toggle('sidebar-collapsed', collapsed);
+  localStorage.setItem(LS_SIDEBAR, collapsed ? '1' : '0');
+}
+document.getElementById('sidebar-toggle').addEventListener('click', () => {
+  const isCollapsed = document.getElementById('sidebar').classList.contains('collapsed');
+  setSidebarCollapsed(!isCollapsed);
+});
+// Restore on load
+setSidebarCollapsed(localStorage.getItem(LS_SIDEBAR) === '1');
 const getFhKey = () => localStorage.getItem(LS_FH) || '';
 const setFhKey = (v) => localStorage.setItem(LS_FH, v.trim());
 
