@@ -38,6 +38,8 @@ const SYMBOLS = {
   MSFT: 'NASDAQ:MSFT',
   AMD:  'NASDAQ:AMD',
   ARM:  'NASDAQ:ARM',
+  LITE: 'NASDAQ:LITE',  // Lumentum — optical components peer of COHR
+  HPE:  'NYSE:HPE',     // Hewlett Packard Enterprise — AI servers + Cray
   // ── Robotics chart additions ───────────────────────────────────────────
   RRX:  'NYSE:RRX',     // Regal Rexnord — precision gearboxes
   TKR:  'NYSE:TKR',     // Timken — bearings
