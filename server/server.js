@@ -62,6 +62,49 @@ const SYMBOLS = {
   TSLA: 'NASDAQ:TSLA',  // Tesla — Optimus humanoid
   AVAV: 'NASDAQ:AVAV',  // AeroVironment — drones
   WMT:  'NASDAQ:WMT',   // Walmart — Symbotic deployment
+  // ── Defense chart additions ────────────────────────────────────────────
+  KO:   'NYSE:KO',      // Coca-Cola
+  PEP:  'NASDAQ:PEP',   // PepsiCo
+  PG:   'NYSE:PG',      // Procter & Gamble
+  CL:   'NYSE:CL',      // Colgate-Palmolive
+  COST: 'NASDAQ:COST',  // Costco
+  JNJ:  'NYSE:JNJ',     // Johnson & Johnson
+  LLY:  'NYSE:LLY',     // Eli Lilly
+  UNH:  'NYSE:UNH',     // UnitedHealth
+  ABT:  'NYSE:ABT',     // Abbott Laboratories
+  NEE:  'NYSE:NEE',     // NextEra Energy
+  DUK:  'NYSE:DUK',     // Duke Energy
+  SO:   'NYSE:SO',      // Southern Company
+  AWK:  'NYSE:AWK',     // American Water Works
+  VZ:   'NYSE:VZ',      // Verizon
+  T:    'NYSE:T',       // AT&T
+  AMT:  'NYSE:AMT',     // American Tower
+  MCD:  'NYSE:MCD',     // McDonald's
+  DG:   'NYSE:DG',      // Dollar General
+  WM:   'NYSE:WM',      // Waste Management
+  YUM:  'NYSE:YUM',     // Yum! Brands
+  // ── Space chart additions ──────────────────────────────────────────────
+  // L0 上游元器件
+  HXL:  'NYSE:HXL',     // Hexcel — 碳纤维复合材料
+  MOG:  'NYSE:MOG.A',   // Moog Inc Class A — 精密执行器/阀门
+  MRCY: 'NASDAQ:MRCY',  // Mercury Systems — 抗辐射芯片
+  RDW:  'NYSE:RDW',     // Redwire — 太阳能阵列/在轨制造
+  // L1 整星与火箭
+  SPCX: 'NASDAQ:SPCX',  // SpaceX — 2026.6 IPO
+  RKLB: 'NASDAQ:RKLB',  // Rocket Lab
+  LMT:  'NYSE:LMT',     // Lockheed Martin
+  NOC:  'NYSE:NOC',     // Northrop Grumman
+  BA:   'NYSE:BA',      // Boeing
+  // L2 运营商
+  ASTS: 'NASDAQ:ASTS',  // AST SpaceMobile
+  IRDM: 'NASDAQ:IRDM',  // Iridium
+  GSAT: 'NASDAQ:GSAT',  // Globalstar
+  VSAT: 'NASDAQ:VSAT',  // Viasat
+  PL:   'NYSE:PL',      // Planet Labs
+  BKSY: 'NYSE:BKSY',    // BlackSky
+  // L3 终端客户
+  AAPL: 'NASDAQ:AAPL',  // Apple
+  TMUS: 'NASDAQ:TMUS',  // T-Mobile
 };
 
 // ── HTTP + WebSocket server ───────────────────────────────────────────────────
@@ -132,11 +175,13 @@ function startTradingView() {
       const high      = data.high_price       ?? null;
       const low       = data.low_price        ?? null;
 
-      // Compute standard "vs yesterday's close" change (same as most brokers/apps).
-      const change    = (price != null && prevClose != null) ? price - prevClose : null;
-      const changePct = (price != null && prevClose != null && prevClose !== 0)
+      // Prefer TradingView's own ch/chp fields — they always reflect today's session
+      // baseline (TradingView updates the reference price each day). Falling back to
+      // manual computation only when the native fields are absent.
+      const change    = data.ch  ?? ((price != null && prevClose != null) ? price - prevClose : null);
+      const changePct = data.chp ?? ((price != null && prevClose != null && prevClose !== 0)
         ? (price - prevClose) / prevClose * 100
-        : null;
+        : null);
 
       if (price == null) return;
 

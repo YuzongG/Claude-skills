@@ -343,6 +343,18 @@ header {
 .rel-score-bar-wrap { flex-shrink: 0; display: flex; align-items: center; gap: 5px; }
 .rel-score-bar { height: 5px; border-radius: 3px; }
 .rel-score-num { font-size: 11px; font-weight: 700; width: 24px; text-align: right; }
+.rel-tag { flex-shrink: 0; font-size: 9.5px; }
+.rel-src {
+  color: #4ade80; text-decoration: none; font-weight: 600;
+  padding: 2px 6px; border-radius: 5px;
+  background: rgba(74,222,128,0.10); border: 1px solid rgba(74,222,128,0.35);
+}
+.rel-src:hover { background: rgba(74,222,128,0.22); }
+.rel-inferred {
+  color: #f59e0b; font-weight: 600;
+  padding: 2px 6px; border-radius: 5px;
+  background: rgba(245,158,11,0.10); border: 1px dashed rgba(245,158,11,0.5);
+}
 
 .action-btns { display: flex; gap: 10px; margin-bottom: 4px; }
 .action-btn {
@@ -470,11 +482,28 @@ header {
       <div class="tab-sub">产业链 · 24</div>
     </div>
   </button>
+  <button class="tab-btn" data-chart="defense" data-tooltip="防守板块 · 21">
+    <span class="tab-icon">🛡️</span>
+    <div class="tab-text">
+      <div class="tab-label">防守板块</div>
+      <div class="tab-sub">穿越周期 · 21</div>
+    </div>
+  </button>
+  <button class="tab-btn" data-chart="space" data-tooltip="太空板块 · 18">
+    <span class="tab-icon">🚀</span>
+    <div class="tab-text">
+      <div class="tab-label">太空板块</div>
+      <div class="tab-sub">材料→终端 · 18</div>
+    </div>
+  </button>
 </aside>
 
 <header>
   <div class="header-left">
-    <h1 id="page-title"></h1>
+    <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
+      <h1 id="page-title"></h1>
+      <span id="chart-avg-badge" style="display:none;font-size:19px;font-weight:800;letter-spacing:0.02em;padding:2px 12px;border-radius:8px;background:rgba(255,255,255,0.05)"></span>
+    </div>
     <p id="page-subtitle"></p>
   </div>
   <button id="settings-btn" title="API 设置">⚙</button>
@@ -488,7 +517,17 @@ header {
   <span class="score-bar"><span class="score-swatch" style="background:#eab308"></span>6–7 重要关联</span>
   <span class="score-bar"><span class="score-swatch" style="background:#f97316"></span>4–5 一般关联</span>
   <span class="score-bar"><span class="score-swatch" style="background:#ef4444"></span>0–3 弱/间接</span>
-  <span style="margin-left:auto">↑ 上游供应方 &nbsp; ↓ 下游采购方</span>
+  <span style="margin-left:auto;display:flex;gap:14px;align-items:center">
+    <span style="display:inline-flex;align-items:center;gap:5px">
+      <svg width="22" height="6"><line x1="0" y1="3" x2="22" y2="3" stroke="#94a3b8" stroke-width="2"/></svg>
+      实线 = 有公开源头
+    </span>
+    <span style="display:inline-flex;align-items:center;gap:5px">
+      <svg width="22" height="6"><line x1="0" y1="3" x2="22" y2="3" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,3"/></svg>
+      虚线 = 推测
+    </span>
+    <span>↑ 上游 &nbsp; ↓ 下游</span>
+  </span>
 </div>
 
 <div id="ws-bar" class="disconnected">
@@ -765,6 +804,156 @@ const CHARTS = {
     },
   },
 
+  defense: {
+    title: '防守板块 — 穿越经济周期的压舱石',
+    subtitle: '需求刚性 · Beta &lt; 1 · 稳定分红 · 2026 · <strong>点击</strong>查看业务详情',
+    layerNames: ['必需消费品','医疗保健','公用事业','电信','降级受益'],
+    width: 1320,
+    numLayers: 5,
+    nodes: [
+      // L0 必需消费品
+      {id:'KO',   co:'Coca-Cola',             desc:'饮料帝国 · Beta 0.57\n分红连续增长 62 年\n→ 200 国销售', l:0, x:30,   u:true},
+      {id:'PEP',  co:'PepsiCo',               desc:'饮料 + 零食双引擎\n分红贵族连续 52 年\n→ Frito-Lay 护城河', l:0, x:250,  u:true},
+      {id:'PG',   co:'Procter & Gamble',       desc:'日用消费品帝国\n分红王连续增长 67 年\n→ 65+ 全球知名品牌', l:0, x:470,  u:true},
+      {id:'CL',   co:'Colgate-Palmolive',      desc:'全球牙膏市占率 38%\n个护 + 宠物食品\n→ 分红增长 61 年', l:0, x:690,  u:true},
+      {id:'COST', co:'Costco',                 desc:'会员费护城河\n续费率 93%\n→ 经济差性价比受益', l:0, x:910,  u:true},
+      {id:'WMT',  co:'Walmart',                desc:'全球最大零售商\n降级消费核心受益\n→ Everyday Low Price', l:0, x:1130, u:true},
+      // L1 医疗保健
+      {id:'JNJ',  co:'Johnson & Johnson',      desc:'医药 + 器械双驱动\n分红增长 61 年\n→ AAA 信用评级', l:1, x:85,   u:true},
+      {id:'LLY',  co:'Eli Lilly',              desc:'GLP-1 减肥/糖尿病\n→ Mounjaro · 年增速 30%+\n成长型防守股', l:1, x:415,  u:true},
+      {id:'UNH',  co:'UnitedHealth',           desc:'美国最大医疗保险\n覆盖 1 亿美国人\n→ 刚需定价权', l:1, x:745,  u:true},
+      {id:'ABT',  co:'Abbott Laboratories',    desc:'器械 + 快速诊断\n分红增长 52 年\n→ FreeStyle Libre CGM', l:1, x:1075, u:true},
+      // L2 公用事业
+      {id:'NEE',  co:'NextEra Energy',         desc:'全球最大可再生能源\n公用事业 · Beta 0.45\n→ 稳定股息 + 绿电龙头', l:2, x:85,   u:true},
+      {id:'DUK',  co:'Duke Energy',            desc:'美国东南部电网龙头\n850 万用户\n→ 股息率 3.8%', l:2, x:415,  u:true},
+      {id:'SO',   co:'Southern Company',       desc:'美国南部电力垄断\n90 年+ 分红历史\n→ 政府管制定价', l:2, x:745,  u:true},
+      {id:'AWK',  co:'American Water Works',   desc:'美国最大上市水务\n→ 水 = 终极刚需\n持续资本投入护城河', l:2, x:1075, u:true},
+      // L3 电信
+      {id:'VZ',   co:'Verizon',                desc:'美国无线网络龙头\n股息率 6%+\n→ 手机套餐必需品', l:3, x:140,  u:true},
+      {id:'T',    co:'AT&T',                   desc:'通信基础设施巨头\n股息率 5.5%\n→ 5G 网络覆盖全美', l:3, x:580,  u:true},
+      {id:'AMT',  co:'American Tower',         desc:'全球最大铁塔 REIT\n22.5 万座 · 全球布局\n→ 长期租约锁定收入', l:3, x:1020, u:true},
+      // L4 降级受益
+      {id:'MCD',  co:"McDonald's",             desc:'经济衰退降级消费\n最大受益 · 全球 4 万店\n→ 特许经营轻资产', l:4, x:85,   u:true},
+      {id:'DG',   co:'Dollar General',         desc:'折扣零售龙头\n→ 经济差客流加速\n2 万+ 门店覆盖', l:4, x:415,  u:true},
+      {id:'WM',   co:'Waste Management',       desc:'废物处理绝对刚需\n→ 垃圾量不受经济影响\n75% 美国市占率', l:4, x:745,  u:true},
+      {id:'YUM',  co:'Yum! Brands',            desc:'KFC + Pizza Hut\n+ Taco Bell · 全球 5.5 万店\n→ 降级就餐受益', l:4, x:1075, u:true},
+    ],
+    edges: [],
+    info: {
+      KO:   { summary: 'Coca-Cola 是全球最具代表性的防守股，连续 62 年提高股息（分红王 Dividend King）。产品遍布 200 个国家，品牌价值超 900 亿美元。Beta 仅 0.57，大盘跌 10% 时可口可乐平均只跌 5-6%。Buffett 持仓超 30 年，视其为"终身持有型"标的。定价权极强，每次涨价消费者几乎无感，是通胀环境中的天然对冲工具。' },
+      PEP:  { summary: 'PepsiCo 是饮料 + 零食的双引擎帝国，旗下 Pepsi、Lay\'s、Cheetos、Gatorade 等覆盖休闲食品和饮料双板块。Frito-Lay 零食业务实际上比饮料更赚钱，提供显著多元化对冲。连续 52 年提高股息，Beta 约 0.55，在经济衰退中需求几乎不受影响——人们即使减少外出就餐，也会买薯片和饮料。' },
+      PG:   { summary: 'Procter & Gamble 是全球日用消费品帝国，旗下 65+ 品牌包括 Tide、Pampers、Gillette、Oral-B。连续 67 年提高股息（分红王中的分红王）。产品涵盖洗涤、个护、婴儿用品，经济好坏都必须消费。在通胀期有极强提价能力，消费者几乎没有替代选项。是"刚性需求"最纯粹的体现。' },
+      CL:   { summary: 'Colgate-Palmolive 持有全球牙膏市场约 38% 份额，在新兴市场（印度、拉丁美洲）渗透率持续提升。旗下 Hill\'s 宠物食品业务是高速增长亮点。连续 61 年提高股息。刷牙是人类最基本的日常行为，无论经济周期如何，牙膏需求极其稳定。' },
+      COST: { summary: 'Costco 的防守性来自其独特的"会员费护城河"：93% 的续费率、1.3 亿活跃会员创造稳定年费收入（近 50 亿美元/年），几乎与商品销售利润一样多。经济衰退中，消费者更倾向大宗购买节约成本，会员量反而加速增长。Beta 约 0.75，市场下跌时波动相对较小。' },
+      WMT:  { summary: 'Walmart 是全球最大零售商，"Everyday Low Price"定位使其成为经济衰退中最大受益者：消费者从餐厅和精品店"降级"到 Walmart。电商业务（Walmart+）快速增长，广告业务成为新利润来源。连续 51 年提高股息。高通胀和经济压力期间客流量历史性上升，是防守 + 成长难得兼备的蓝筹股。' },
+      JNJ:  { summary: 'Johnson & Johnson 是全球最大医疗健康公司（2023 年剥离消费品业务后聚焦医药和器械），持有全球最高的 AAA 信用评级，连续 61 年提高股息。Innovative Medicine 部门（肿瘤、免疫学）和 MedTech 部门（骨科、心血管）提供稳定现金流。病了就得治，医疗需求是最终极的刚需。' },
+      LLY:  { summary: 'Eli Lilly 是罕见的"成长型防守股"——以 GLP-1 类药物 Mounjaro（糖尿病）和 Zepbound（减肥）为核心，面向全球每 8 人中就有 1 人患有的糖尿病市场。糖尿病和肥胖症的治疗需求与经济周期完全脱钩，处方药不会因为股市下跌而减少。是防守性 + 成长性难得兼备的标的。' },
+      UNH:  { summary: 'UnitedHealth 是美国最大医疗保险公司，覆盖超 1 亿美国人。旗下 Optum 健康服务部门（数据分析 + 药房福利 + 护理服务）已成为核心利润引擎。医疗保险属于不可或缺的必需品，雇主和政府是主要付款方，需求与个人消费能力脱钩。是美国医疗体系事实上的"私人运营商"。' },
+      ABT:  { summary: 'Abbott Laboratories 是全球医疗器械 + 快速诊断 + 营养品多元化公司。核心产品 FreeStyle Libre（连续血糖监测系统）是全球市场份额第一的 CGM 设备，面向 5 亿糖尿病患者市场。连续 52 年提高股息。医疗器械需求与经济周期的相关性极低——心脏支架和血糖仪不会因为股市下跌就停止使用。' },
+      NEE:  { summary: 'NextEra Energy 是全球最大可再生能源公用事业公司，风能和太阳能装机量全球第一。Beta 仅 0.45，是典型的低波动防守资产。股息率约 2.8%，连续多年稳步提升。公用事业监管定价机制使其收入极度稳定，AI 数据中心用电激增带来额外成长催化剂。是"防守 + 绿电成长"的双重标的。' },
+      DUK:  { summary: 'Duke Energy 是美国最大电力公司之一，为美国东南部（北卡、南卡、佛罗里达等）约 850 万用户供电。政府管制定价，收入极其稳定。股息率约 3.8%。积极推进可再生能源转型，计划 2030 年前新增 40GW 清洁能源。无论经济好坏，家庭和企业都必须用电，是最纯粹的"定价防御"资产。' },
+      SO:   { summary: 'Southern Company 是美国最大公用事业公司之一，为美国南部（佐治亚、阿拉巴马等）提供电力和天然气，客户超 900 万。超过 90 年的连续分红历史，股息率约 3.5%。政府监管定价使其现金流极其稳定，完全不受经济周期影响。数据中心用电需求在其服务区高速增长，是额外成长催化剂。' },
+      AWK:  { summary: 'American Water Works 是美国最大上市水务公司，为 14 个州约 1400 万人提供自来水和污水处理服务。水是人类最基本的生存需求，需求稳定性无可比拟。持续的管网升级资本支出形成强大的进入壁垒。股息率约 2%，连续多年提升。是防守板块中需求刚性最强、竞争风险最低的标的之一。' },
+      VZ:   { summary: 'Verizon 是美国无线通信网络龙头，拥有约 1.15 亿无线用户。股息率超 6%，是 S&P 500 中股息率最高的大型股之一。手机服务几乎是现代生活不可或缺的必需品，用户转换运营商摩擦成本高，收入极为稳定。5G 资本支出高峰已过，自由现金流改善支撑持续分红能力。' },
+      T:    { summary: 'AT&T 是美国第二大无线运营商，同时运营全国最大光纤宽带网络（约 2700 万接入点）。历经 DirecTV 剥离和债务压缩后，回归专注电信核心业务，财务结构显著改善。股息率约 5.5%。宽带 + 无线双引擎驱动增长，5G 和光纤是长期护城河。通信服务是现代经济基础设施，需求对周期不敏感。' },
+      AMT:  { summary: 'American Tower 是全球最大通信铁塔 REIT，在全球运营超过 22.5 万座通信铁塔。商业模式极简：将铁塔空间租给 AT&T、Verizon 等运营商，合同期 10-25 年，含年均 3-5% 提价条款。5G 部署需要更密集的站点，是长期成长催化剂。作为 REIT 必须分配 90% 应税收入，股息稳定性有结构保障。' },
+      MCD:  { summary: "McDonald's 是全球最具防守性的餐饮标的。经济衰退时的「降级消费」效应：人们从高档餐厅转移到麦当劳，客流量反升。全球 4 万家门店中 95% 是特许经营，使其本身资产负债表极轻，自由现金流极高。无论经济好坏，每天 7000 万人到访。是餐饮版的「防守 + 全球化成长」双重标的。" },
+      DG:   { summary: 'Dollar General 是美国增长最快的零售商之一，主要服务农村和小镇地区（75% 门店位于人口 2 万以下社区）。经济衰退是其"顺风期"：消费者加速向低价渠道转移，Dollar General 的固定低价模式直接受益。连续多年开店 700-1000 家/年，渗透率仍在提升。是最纯粹的"经济越差越受益"型防守标的。' },
+      WM:   { summary: 'Waste Management 是美国最大废物处理公司，垃圾收集和处理服务约占美国市场 75% 份额。商业模式简单到极点：社区和企业必须清理垃圾，经济好坏都无法停止。长期合同（通常 3-7 年）+ 年均涨价条款确保收入稳定性。填埋场资产难以复制，形成极深的地域性护城河。是防守性最强的基础设施股之一。' },
+      YUM:  { summary: "Yum! Brands 旗下拥有 KFC、Pizza Hut、Taco Bell 三大全球快餐品牌，全球门店超 55,000 家（遍布 155 个国家），98% 特许经营。与 McDonald's 一样，经济压力下消费者「降级就餐」直接利好快餐板块。新兴市场持续扩张提供长期成长空间。轻资产特许模式产生极高自由现金流，支持持续增长的股息。" },
+    },
+  },
+
+  space: {
+    title: '太空板块 — 上游材料到终端用户的真实供应链',
+    subtitle: '材料 → 整星与火箭 → 卫星运营 → 终端客户 · 2026 · <strong>点击</strong>查看业务详情与连线评分',
+    layerNames: ['上游元器件与材料','整星制造与火箭发射','卫星运营商','终端客户与生态合作'],
+    width: 1320,
+    numLayers: 4,
+    nodes: [
+      // L0 上游元器件与材料
+      {id:'HXL',  co:'Hexcel',                desc:'碳纤维与复合材料\n→ 火箭壳体/整流罩\n+ 卫星结构件',             l:0, x:85,   u:true},
+      {id:'MOG',  co:'Moog Inc',              desc:'精密执行器与阀门\n→ 火箭发动机控制\n+ 卫星姿态推进',           l:0, x:415,  u:true},
+      {id:'MRCY', co:'Mercury Systems',       desc:'抗辐射处理芯片\n+ 国防航电\n→ 军用卫星+雷达核心',                l:0, x:745,  u:true},
+      {id:'RDW',  co:'Redwire',               desc:'太阳能阵列+在轨制造\n+ 相机/天线/机械臂\n→ 卫星子系统供应',     l:0, x:1075, u:true},
+      // L1 整星制造与火箭发射
+      {id:'SPCX', co:'SpaceX',                desc:'Falcon/Starship 发射\n+ Starlink 星座运营\n→ 2026.6 IPO · 商业航天霸主', l:1, x:30,   u:true},
+      {id:'RKLB', co:'Rocket Lab',            desc:'Electron 小火箭\nNeutron 中型在研\n+ 自研卫星总线',              l:1, x:305,  u:true},
+      {id:'LMT',  co:'Lockheed Martin',       desc:'国防卫星总线 LM 2100\n造了 Iridium NEXT 全部 75 颗\n+ OPIR 导弹预警卫星', l:1, x:580,  u:true},
+      {id:'NOC',  co:'Northrop Grumman',      desc:'LEOStar/GEOStar 卫星总线\nNRO 情报卫星主承包商\n+ B-21 隐形轰炸机', l:1, x:855,  u:true},
+      {id:'BA',   co:'Boeing',                desc:'Starliner 飞船\n造了 ViaSat-3 系列卫星\n+ 50% ULA Vulcan 火箭', l:1, x:1130, u:true},
+      // L2 卫星运营商
+      {id:'ASTS', co:'AST SpaceMobile',       desc:'卫星直连智能手机\n→ AT&T、Verizon、Vodafone\n5 颗 BlueBird 已发射',  l:2, x:30,   u:true},
+      {id:'IRDM', co:'Iridium',               desc:'全球 66 颗低轨\n卫星语音/数据/IoT\n→ 正自由现金流',             l:2, x:250,  u:true},
+      {id:'GSAT', co:'Globalstar',            desc:'苹果卫星 SOS 独家\n→ iPhone 14+ 预装\nApple 投资 17 亿美元',     l:2, x:470,  u:true},
+      {id:'VSAT', co:'Viasat',                desc:'高带宽宽带卫星\n→ 航空 Wi-Fi + 军事\n吃 ViaSat-3 GEO 星',         l:2, x:690,  u:true},
+      {id:'PL',   co:'Planet Labs',           desc:'200+ 地球观测卫星\n→ 每日全球扫描\n国防情报+对冲基金',           l:2, x:910,  u:true},
+      {id:'BKSY', co:'BlackSky',              desc:'小时级实时卫星成像\n→ NRO + 军方主客户\n乌克兰战场验证',         l:2, x:1130, u:true},
+      // L3 终端客户与生态合作
+      {id:'AAPL', co:'Apple',                 desc:'iPhone 卫星 SOS\n→ 独家用 Globalstar\n太空进入消费电子',          l:3, x:140,  u:true},
+      {id:'T',    co:'AT&T',                  desc:'ASTS 战略股东\n→ 卫星补盲 1.15 亿用户\n5G + 卫星双网',           l:3, x:580,  u:true},
+      {id:'TMUS', co:'T-Mobile',              desc:'Starlink 直连手机\n→ SpaceX 首个\n移动运营商独家伙伴',          l:3, x:1020, u:true},
+    ],
+    edges: [
+      // ── L0 元器件 → L1 整星与火箭（全部为推测，SpaceX/RKLB 不公开供应商清单）─
+      {f:'HXL', t:'SPCX',s:6, inferred:true},
+      {f:'HXL', t:'RKLB',s:7, inferred:true},
+      {f:'HXL', t:'LMT', s:6, inferred:true},
+      {f:'HXL', t:'NOC', s:6, inferred:true},
+      {f:'HXL', t:'BA',  s:7, inferred:true},
+      {f:'MOG', t:'SPCX',s:4, inferred:true},  // SpaceX 垂直整合，存疑
+      {f:'MOG', t:'RKLB',s:6, inferred:true},
+      {f:'MOG', t:'LMT', s:8, inferred:true},
+      {f:'MOG', t:'NOC', s:8, inferred:true},
+      {f:'MOG', t:'BA',  s:8, inferred:true},
+      {f:'MRCY',t:'LMT', s:8, inferred:true},
+      {f:'MRCY',t:'NOC', s:8, inferred:true},
+      {f:'MRCY',t:'BA',  s:6, inferred:true},
+      {f:'RDW', t:'NOC', s:6, inferred:true},
+      {f:'RDW', t:'LMT', s:5, inferred:true},
+      // ── L1 整星/发射 → L2 运营商（确定，附源头）────────────────────────
+      {f:'SPCX',t:'IRDM',s:10, src:'https://www.iridium.com/blog/2019/01/11/the-iridium-next-launches-by-the-numbers/'},
+      {f:'SPCX',t:'ASTS',s:9,  src:'https://ast-science.com/2024/09/12/ast-spacemobile-confirms-successful-launch-of-its-first-five-commercial-bluebird-satellites/'},
+      {f:'SPCX',t:'PL',  s:9,  src:'https://www.planet.com/pulse/planet-celebrates-successful-launch-of-36-superdoves-on-the-spacex-transporter-2-mission/'},
+      {f:'SPCX',t:'BKSY',s:7,  src:'https://www.blacksky.com/blacksky-launches-two-more-satellites-via-spacex-transporter-3-mission/'},
+      {f:'SPCX',t:'VSAT',s:4,  inferred:true},  // 偶有发射，非主力
+      {f:'RKLB',t:'BKSY',s:9,  src:'https://www.rocketlabusa.com/missions/all-missions/?customer=blacksky'},
+      {f:'RKLB',t:'PL',  s:6,  src:'https://www.rocketlabusa.com/about/news/rocket-lab-launches-second-mission-for-planet/'},
+      {f:'LMT', t:'IRDM',s:3,  src:'https://investors.lockheedmartin.com/news-releases/news-release-details/thales-alenia-space-awards-lockheed-martin-payload-application'},  // 仅 payload 软件，非主造方
+      {f:'NOC', t:'IRDM',s:8,  src:'https://news.northropgrumman.com/news/releases/orbital-atk-marks-final-iridium-next-satellite-assembly-and-integration'},  // Orbital ATK 在亚利桑那组装 75 颗
+      {f:'BA',  t:'VSAT',s:9,  src:'https://www.viasat.com/about/newsroom/press-releases/viasat-selects-boeing-to-build-third-ultra-high-capacity-satellite/'},
+      // ── L2 运营商 → L3 终端（确定，附源头）─────────────────────────────
+      {f:'GSAT',t:'AAPL',s:10, src:'https://www.apple.com/newsroom/2022/09/apple-introduces-emergency-sos-via-satellite/'},
+      {f:'ASTS',t:'T',   s:10, src:'https://about.att.com/story/2024/att-ast-spacemobile.html'},
+      // ── 跨层 L1 → L3：Starlink direct-to-cell ─────────────────────────
+      {f:'SPCX',t:'TMUS',s:10, src:'https://www.t-mobile.com/news/un-carrier/t-mobile-takes-coverage-above-and-beyond-with-spacex'},
+    ],
+    info: {
+      // L0 上游元器件与材料
+      HXL:  { summary: 'Hexcel 是航空航天碳纤维复合材料全球双雄之一（与日本东丽并列），核心产品为预浸料、蜂窝结构和先进碳纤维织物。航天领域为火箭整流罩、燃料舱、卫星结构件提供轻量化材料——SpaceX Falcon 系列整流罩、Rocket Lab Electron 全碳纤维结构、Boeing Starliner 都重度依赖 Hexcel 材料。商业航空（波音 787、空客 A350）才是主营，太空只是高毛利的小但重要分支。订单可见性极长（航空合同 5-10 年），是太空供应链最上游的稳定标的。' },
+      MOG:  { summary: 'Moog Inc 是精密运动控制龙头，产品涵盖伺服阀、执行器、滑环、推进控制系统。在太空领域为火箭发动机推力矢量控制（TVC）、卫星姿态推进器、太阳能阵列展开机构提供核心精密部件——SpaceX Falcon 9 二级、Rocket Lab Electron、波音 Starliner 全部使用 Moog 产品。同时也是 F-35、爱国者导弹等国防项目供应商。商业模式是「售后服务 + 长寿命备件」高毛利模式，太空业务份额持续提升。' },
+      MRCY: { summary: 'Mercury Systems 是国防与航天系统抗辐射加固嵌入式电子专家，提供抗辐射处理板卡、传感器处理模块、安全通讯组件。客户高度集中于 LMT、NOC、RTX 等总承包商，配套军用卫星载荷、雷达、电子战系统。SDA Tranche 系列军用 LEO 卫星、Next-Gen OPIR 导弹预警卫星都重度依赖 Mercury 产品。属于「太空 × 国防 × 半导体」三重交集的独特标的，订单可见性高。' },
+      RDW:  { summary: 'Redwire 是太空基础设施一站式供应商，业务覆盖太阳能阵列（卫星电源核心）、相机/传感器、机械臂、在轨制造（ISS 上独家半导体晶体与人体器官打印实验）。2024 年收购 Hera Systems 切入国防卫星整星制造，2025 年获得多份美军 SDA 合同。受益于商业空间站（Axiom Station）和月球门户（Lunar Gateway）的硬件需求爆发期。是 4 只元器件中最纯粹的太空 pure-play。' },
+      // L1 整星制造与火箭发射
+      SPCX: { summary: 'SpaceX 于 2026 年 6 月 12 日完成创纪录 IPO（发行价 $135，首日收盘 $161，市值约 5500 亿美元），ticker SPCX，纳斯达克全球精选市场上市。是商业航天的绝对霸主：Falcon 9/Heavy 火箭垄断全球商业发射市场（份额 85%+）、Starship 重型可重复使用火箭进入试飞阶段、Starlink 已成为全球最大低轨星座（在轨 7000+ 颗），并已通过与 T-Mobile 合作提供卫星直连手机服务。同时承接 NASA 商业乘员（Dragon）、NRO 高价值情报卫星、美军 Tranche 发射等关键政府合同。属于「火箭 + 卫星运营 + 直连手机」三位一体的全栈玩家，是太空板块所有其他公司的上游或客户。' },
+      RKLB: { summary: 'Rocket Lab 是 SpaceX 之外最成熟的商业发射公司，Electron 小型火箭累计发射超 50 次，成功率行业领先。在研的 Neutron 中型可重复使用火箭瞄准 SpaceX Falcon 9 细分市场，目标 2026 首飞。除发射业务外，Space Systems 部门提供整星制造、太阳能阵列、姿态控制等子系统，是 NASA 火星采样返回任务关键供应商。商业模式是「火箭 + 卫星总线」双线，比纯发射公司抗风险性更强，是 SPCX IPO 后估值最受益的「次旗手」。' },
+      LMT:  { summary: 'Lockheed Martin 是全球最大国防承包商，太空系统部门年营收超 120 亿美元，承包美军最关键的导弹预警卫星（Next-Gen OPIR）、GPS III 卫星、火星采样返回任务等。**造了 Iridium NEXT 全部 75 颗低轨卫星，是 IRDM 业务的物理基础**。F-35 主战飞机业务持续提供稳定现金流。在「下一代太空架构」（NGSA）等美军太空军重点项目中占据主导地位。' },
+      NOC:  { summary: 'Northrop Grumman 在国防太空系统中地位极其稳固，承担 B-21 Raider 隐形轰炸机和 Sentinel 洲际导弹两大旗舰项目，太空系统部门负责美国国家侦察局（NRO）的高价值情报卫星和商业卫星运载平台（LEOStar、GEOStar 系列卫星总线）。是美国太空军最重要的承包商之一，订单可见性极高。' },
+      BA:   { summary: 'Boeing 在国防太空双线：商业航空之外，国防部门负责 NASA 商业乘员计划的 Starliner 飞船（虽然 2024 年技术问题严重）、SLS 月球火箭核心级，并**为 Viasat 制造了 ViaSat-3 系列高带宽 GEO 卫星**。通过 50% 持股的 United Launch Alliance（ULA）参与 Atlas V 和 Vulcan 火箭发射业务。Vulcan 火箭是美军重要发射工具，提供长期太空业务托底。' },
+      // L2 卫星运营商
+      ASTS: { summary: 'AST SpaceMobile 是「卫星直连普通智能手机」赛道的领跑者，与 AT&T（战略股东）、Verizon、Vodafone、Bell Canada、Rakuten 等签订独家或战略协议，覆盖全球数十亿手机用户。已发射 5 颗 BlueBird 商业卫星（由 SpaceX 发射），2025-2026 完成 25 颗组网即可在美国本土启动商业服务。技术验证已完成（与 AT&T 完成 5G 视频通话），剩下是产能和资本问题，是商业航天中最具规模化潜力的标的。' },
+      IRDM: { summary: 'Iridium 拥有全球唯一覆盖两极的低轨卫星语音/数据网络——**66 颗主星全部由 Lockheed Martin 制造、由 SpaceX Falcon 9 发射**（Iridium NEXT 全部 75 颗，2017-2019 完成部署）。是商业航天中罕见的「正现金流 + 稳定增长」公司。IoT 业务（物流追踪、海事监控、远程资产管理）是最大增长引擎，订阅用户突破 250 万。2026 年起将分发 Project Stardust 直连手机服务。' },
+      GSAT: { summary: 'Globalstar 是 Apple iPhone 卫星 SOS 紧急通讯独家供应商，从 iPhone 14 开始预装。Apple 已投入约 17 亿美元为其升级地面站和扩展星座（2026 年起新发射卫星），并签订付费持续协议。是「商业 + 消费电子」绑定最深的卫星运营商，下行风险有 Apple 协议托底。' },
+      VSAT: { summary: 'Viasat 是高带宽 GEO 宽带卫星运营商，主要市场是航空 Wi-Fi（Delta、JetBlue 主供应商）、海事宽带、军事 SATCOM。**核心卫星 ViaSat-3 系列由 Boeing 制造**。2023 年完成对 Inmarsat 的收购，规模翻倍但债务沉重。短期面临 Starlink（SPCX 旗下）在航空和海事市场的强势竞争，是太空板块中防守属性较强但成长性受到挤压的标的。' },
+      PL:   { summary: 'Planet Labs 运营全球最大商业地球观测星座（200+ Dove 卫星 + SkySat 高分辨率卫星），每日扫描全球陆地。**早期 Dove 卫星由 SpaceX 与 Rocket Lab 双路发射，是 RKLB Electron 主力客户之一**。客户包括美国国防情报局（NGA）、欧洲航天局、各国农业部，以及对冲基金的另类数据（停车场车流、油罐液位等）。2024 年签订多份军事情报合同，是利润率拐点。' },
+      BKSY: { summary: 'BlackSky 提供小时级实时卫星成像 + AI 自动分析（船只追踪、机场活动、施工进度等），主要服务美国国家侦察局（NRO）、美军和盟国军方。**卫星由 Rocket Lab Electron 火箭专门发射，是 RKLB 最大商业客户之一**。2024 年获得 NRO 重大长期合同，营收可见性大幅改善。与 Palantir 在 AI 情报分析上深度合作。乌克兰战场需求验证了实时商业情报的战略价值。' },
+      // L3 终端客户与生态合作
+      AAPL: { summary: 'Apple 通过 iPhone 14 起预装 Globalstar 卫星 SOS 紧急通讯服务，将卫星通讯能力首次带入消费电子主流。除了与 Globalstar 的独家协议（投资 17 亿美元升级地面与星座）外，Apple 在卫星短信、未来潜在的卫星消息和数据功能上持续投入。是太空叙事进入消费电子日常使用的标志性合作，也使 GSAT 成为绑定消费电子的"另类防守股"。' },
+      T:    { summary: 'AT&T 是 AST SpaceMobile 的早期战略股东和首个直连手机商业合作伙伴，将通过 ASTS 的 BlueBird 卫星星座为 1.15 亿无线用户提供卫星补盲服务。与 T-Mobile/SpaceX Starlink 在美国本土直接竞争。卫星补盲网络是 5G 覆盖盲区的关键补充，长期价值可能被低估。是「电信防御股 + 卫星互联网期权」双重标的。' },
+      TMUS: { summary: 'T-Mobile 是 SpaceX Starlink 直连手机服务的**全球首个独家移动运营商伙伴**，2024 年起测试 Starlink 卫星补盲短信服务，逐步扩展到语音和数据。SPCX IPO 后这层合作的战略价值进一步放大——TMUS 是直连手机赛道中受益于 SpaceX 而非 ASTS 的代表，与 AT&T 形成生态对垒。卫星补盲提升美国农村地区覆盖能力，是差异化竞争优势。' },
+    },
+  },
+
 };
 
 // ── Settings ──────────────────────────────────────────────────────────────────
@@ -842,19 +1031,36 @@ function heatBg(pct) {
 }
 
 function applyQuote({ ticker, price, changePct }) {
-  const n = nm[ticker]; if (!n) return;
-  n.heatEl.style.background = heatBg(changePct);
-  const priceStr = price != null
-    ? '$' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-    : '';
-  const pctStr   = changePct != null
-    ? (changePct >= 0 ? '+' : '') + changePct.toFixed(2) + '%'
-    : '';
-  const cls = changePct > 0.01 ? 'pos' : changePct < -0.01 ? 'neg' : 'neu';
-  n.priceEl.classList.remove('hidden');
-  n.priceEl.innerHTML =
-    `<span class="live-price">${priceStr}</span>` +
-    `<span class="live-chg ${cls}">${pctStr}</span>`;
+  const n = nm[ticker];
+  if (n) {
+    n.heatEl.style.background = heatBg(changePct);
+    const priceStr = price != null
+      ? '$' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      : '';
+    const pctStr = changePct != null
+      ? (changePct >= 0 ? '+' : '') + changePct.toFixed(2) + '%'
+      : '';
+    const cls = changePct > 0.01 ? 'pos' : changePct < -0.01 ? 'neg' : 'neu';
+    n.priceEl.classList.remove('hidden');
+    n.priceEl.innerHTML =
+      `<span class="live-price">${priceStr}</span>` +
+      `<span class="live-chg ${cls}">${pctStr}</span>`;
+  }
+  updateChartAverage();
+}
+
+function updateChartAverage() {
+  const chart = CHARTS[currentChart];
+  const el = document.getElementById('chart-avg-badge');
+  if (!chart || !el) return;
+  const changes = chart.nodes.map(n => liveQuotes[n.id]?.changePct).filter(c => c != null);
+  if (changes.length === 0) { el.style.display = 'none'; return; }
+  const avg = changes.reduce((a, b) => a + b, 0) / changes.length;
+  const avgStr = (avg >= 0 ? '+' : '') + avg.toFixed(2) + '%';
+  const color = avg > 0.01 ? '#4ade80' : avg < -0.01 ? '#f87171' : '#94a3b8';
+  el.style.display = '';
+  el.style.color = color;
+  el.textContent = avgStr;
 }
 
 function resetAll() {
@@ -868,6 +1074,8 @@ function resetAll() {
     if (!p) return;
     p.setAttribute('stroke','rgba(100,116,139,0.20)'); p.setAttribute('stroke-width','1.5');
     p.setAttribute('marker-end','url(#ah-d)'); p.style.opacity = '1';
+    if (p.dataset.inferred === '1') p.setAttribute('stroke-dasharray','5,4');
+    else p.removeAttribute('stroke-dasharray');
   });
 }
 
@@ -910,15 +1118,24 @@ function renderChart(chartKey) {
 
   const nodes = chart.nodes;
   const edges = chart.edges;
-  const totalH = LY[5] + CH + 30;
+  const numLayers = chart.numLayers || 6;
+  const totalH = LY[numLayers - 1] + CH + 30;
   diagram.style.height = totalH + 'px';
 
-  // Bands
-  LY.forEach((y, i) => {
+  // Show/hide score-hint (only relevant for charts with edges)
+  document.querySelector('.score-hint').style.display = edges.length > 0 ? '' : 'none';
+
+  // Bands + left-side layer labels
+  LY.slice(0, numLayers).forEach((y, i) => {
     const b = document.createElement('div');
     b.className = 'band';
-    b.style.cssText = `top:${y - 12}px; height:${CH + 24}px; background:${LCOLORS[i]}10;`;
+    b.style.cssText = `top:${y - 12}px; height:${CH + 24}px; background:${LCOLORS[i]}10; border-left:2px solid ${LCOLORS[i]}50;`;
     diagram.appendChild(b);
+
+    const lbl = document.createElement('div');
+    lbl.style.cssText = `position:absolute;left:-34px;top:${y}px;height:${CH}px;width:22px;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:13px;font-weight:700;color:${LCOLORS[i]};letter-spacing:0.12em;writing-mode:vertical-rl;pointer-events:none;opacity:0.9;white-space:nowrap;`;
+    lbl.textContent = chart.layerNames[i];
+    diagram.appendChild(lbl);
   });
 
   // Cards
@@ -946,6 +1163,10 @@ function renderChart(chartKey) {
     nm[n.id] = { x: n.x, y: LY[n.l], l: n.l, co: n.co, el: card, heatEl: heatLayer, priceEl: priceRow };
   });
 
+  // Apply any already-received quotes to freshly built cards
+  Object.values(liveQuotes).forEach(q => applyQuote(q));
+  updateChartAverage();
+
   // SVG arrows
   const svg = document.getElementById('arrows');
   svg.setAttribute('width', String(chart.width));
@@ -966,6 +1187,10 @@ function renderChart(chartKey) {
     p.setAttribute('d', `M${x1},${y1} C${x1},${mid} ${x2},${mid} ${x2},${y2}`);
     p.setAttribute('stroke','rgba(100,116,139,0.20)'); p.setAttribute('stroke-width','1.5');
     p.setAttribute('fill','none'); p.setAttribute('marker-end','url(#ah-d)');
+    if (e.inferred) {
+      p.setAttribute('stroke-dasharray','5,4');
+      p.dataset.inferred = '1';
+    }
     p.style.transition = 'opacity 0.15s ease';
     svg.appendChild(p); svgPaths.push(p);
   });
@@ -1132,10 +1357,17 @@ function openPanel(id) {
       arr.map(e => {
         const nb = nm[e.id]; if (!nb) return '';
         const { color } = scoreStyle(e.s);
+        const edge = chart.edges[e.i] || {};
+        const tagHtml = edge.src
+          ? `<a class="rel-src" href="${edge.src}" target="_blank" rel="noopener" title="点击查看公开出处" onclick="event.stopPropagation()">📎 源头</a>`
+          : edge.inferred
+            ? `<span class="rel-inferred" title="未找到具体公开合同/新闻稿，基于行业知识推断">推测</span>`
+            : '';
         return `<div class="rel-item" data-id="${e.id}">
           <div class="rel-dir" style="color:${color}">${e.dir==='in'?'↑上游':'↓下游'}</div>
           <div class="rel-ticker" style="color:${LCOLORS[nb.l]}">${e.id}</div>
           <div class="rel-co">${nb.co}</div>
+          <div class="rel-tag">${tagHtml}</div>
           <div class="rel-score-bar-wrap">
             <div class="rel-score-bar" style="width:${Math.round(e.s*10)}px;background:${color}"></div>
             <div class="rel-score-num" style="color:${color}">${e.s}</div>
