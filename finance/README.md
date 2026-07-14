@@ -12,6 +12,9 @@
 | [dcf-valuation](./dcf-valuation/) | 输入 ticker，自动获取财务数据，用 DCF 方法输出乐观/中性/悲观三情景内在价值与安全边际 | 「帮我做DCF估值」「算内在价值」 | 简体中文 |
 | [news-stock-funnel](./news-stock-funnel/) | 从今日最重要的3条新闻出发，逐层推导：事件→趋势→受影响产业→今日放量个股 | 「早餐选股」「从新闻找机会」「四阶漏斗」 | 简体中文 |
 | [seven-dimension-filter](./seven-dimension-filter/) | 输入 ticker，从七个维度自动评分（满分35），输出仓位建议（满仓/标准/试单/放弃） | 「帮我评分」「七维度打分」「TICKER 能不能买」 | 繁体中文 |
+| [trend-template-scorer](./trend-template-scorer/) | 用 Minervini 趋势模板 8 条标准客观判定，输出 X/8 通过分与是否处于第二阶段 | 「趋势模板」「是不是第二阶段」「Minervini 8条」 | 简体中文 |
+| [add-and-reduce](./add-and-reduce/) | 加仓改止损计算器：给现有股数/止损/加仓股数/现价，算出总风险不变的新统一止损 | 「加仓改止损」「加仓后止损设多少」「不加风险加仓」 | 简体中文 |
+| [rs-leadership-scorer](./rs-leadership-scorer/) | RS 龙头评分：拉近两个月日线，用 ZigZag+捕获率+RS线双基准算「先抗跌后领涨」强度，输出 0–100 分与 A/B/C/F 等级及离场早警 | 「RS 龙头」「找抗跌又领涨的股」「这票现在还强吗」「相对强度评分」 | 简体中文 |
 
 ---
 
@@ -68,6 +71,9 @@ Finnhub MCP Server（精确计算）
 | dcf-valuation | [dcf-valuation.skill](./dcf-valuation/dcf-valuation.skill) |
 | news-stock-funnel | [news-stock-funnel.skill](./news-stock-funnel/news-stock-funnel.skill) |
 | seven-dimension-filter | [seven-dimension-filter.skill](./seven-dimension-filter/seven-dimension-filter.skill) |
+| trend-template-scorer | [trend-template-scorer.skill](./trend-template-scorer/trend-template-scorer.skill) |
+| add-and-reduce | [add-and-reduce.skill](./add-and-reduce/add-and-reduce.skill) |
+| rs-leadership-scorer | [rs-leadership-scorer.skill](./rs-leadership-scorer/rs-leadership-scorer.skill) |
 
 ### Claude Code（MCP 服务器，精确数据）
 
