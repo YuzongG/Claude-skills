@@ -102,6 +102,25 @@ def hot(r):
     return ' ⚠️可能过热' if r['pscore'] >= 55 else ''
 
 
+def rs_char(r):
+    """RS 性质: 全能(攻守都强) / 领涨型(能冲抗跌弱, 板块弱时真弱) / 防守型(抗跌强不领涨)。"""
+    rs = r['rs']
+    if not rs:
+        return '—'
+    s2, s3 = rs['s2'], rs['s3']            # s2=抗跌 s3=领涨
+    if s2 >= 70 and s3 >= 70:
+        return '全能'
+    if s3 >= 70:
+        return '领涨型⚠脆'
+    if s2 >= 70:
+        return '防守型'
+    return '杂'
+
+
+def dcaptxt(r):
+    return f"{r['rs']['dcap']:+.2f}" if r['rs'] else '—'
+
+
 def main():
     global _spy, _etf
     custom = sys.argv[1].replace(',', ' ').split() if len(sys.argv) > 1 else None
@@ -151,17 +170,20 @@ def main():
 
     print(f"\n{'='*66}\n拐点雷达扫描 · {datetime.date.today()} · {len(tasks)}只\n{'='*66}")
 
-    print("\n📈 表1 · 强势股入场")
+    def row(r):
+        return (f"    {r['sym']:<6}{r['sector']:<8}RS {rstxt(r):<7}{rs_char(r):<8}"
+                f"下行{dcaptxt(r):<6}Para {r['pscore']:>3.0f}{hot(r)}")
+    print("\n📈 表1 · 强势股入场   (RS性质: 全能/领涨型⚠脆/防守型; 下行=下行捕获, 越低越抗跌)")
     print(f"\n  ▸ 双腿+RS≥B (胜率王, {len(legs)}只):")
     if legs:
         for r in legs:
-            print(f"    {r['sym']:<6}{r['sector']:<8}RS {rstxt(r):<8}Para {r['pscore']:>3.0f}{hot(r)}")
+            print(row(r))
     else:
         print("    今日无触发")
     print(f"\n  ▸ RS翘头 (利润王, 按RS排序, {len(hooks)}只):")
     if hooks:
         for r in hooks[:25]:
-            print(f"    {r['sym']:<6}{r['sector']:<8}RS {rstxt(r):<8}Para {r['pscore']:>3.0f}{hot(r)}")
+            print(row(r))
         if len(hooks) > 25:
             print(f"    …另 {len(hooks)-25} 只(略)")
     else:
